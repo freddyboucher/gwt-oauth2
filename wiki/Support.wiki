@@ -2,7 +2,6 @@
 #sidebar TableOfContents
 
 Support for this client library: 
-  * [http://groups.google.com/group/google-api-gwt-client Discussion Group] (Questions, Comments)
   * [http://stackoverflow.com/questions/ask Ask on StackOverflow]
     * Use tag [http://stackoverflow.com/questions/tagged/gwt-oauth2 gwt-oauth2] and optionally [http://stackoverflow.com/questions/tagged/gwt-oauth2+gwt gwt]
   * [http://code.google.com/p/gwt-oauth2/issues/entry Report Bug]
