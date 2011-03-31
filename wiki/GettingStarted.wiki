@@ -1,0 +1,46 @@
+#summary A simple sample program, explained.
+#labels Featured,Phase-Implementation
+
+This tutorial walks you through making a simple OAuth2 request to an OAuth2 provider.  It assumes you've [Setup set up the library for your application] and have some familiarity with [http://code.google.com/apis/accounts/docs/OAuth2.html using OAuth2].
+
+= Building the OAuth2 request URL =
+
+The first step is to build an authentication request URL, which is done by using GWT's built-in [http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/http/client/UrlBuilder.html UrlBuilder].
+
+For example, to make an OAuth2 request using Google as the OAuth2 provider:
+
+{{{
+UrlBuilder urlBuilder = new UrlBuilder()
+    .setProtocol("https")
+    .setHost("accounts.google.com")
+    .setPath("o/oauth2/auth")
+    .setParameter("client_id", CLIENT_ID)
+    .setParameter("scope", SCOPE);
+}}}
+
+In this example `CLIENT_ID` is your unique client ID that was assigned to you when you created your API project in the [https://code.google.com/apis/console APIs Console].
+
+`SCOPE` is the scope URL associated with the API you plan on calling. If you were making a request to the [http://code.google.com/apis/buzz/v1/using_rest.html Buzz API] for example, `SCOPE` may be "https://www.googleapis.com/auth/buzz.readonly". Other valid scopes for the Buzz API are listed [http://code.google.com/apis/buzz/v1/using_rest.html#scopes here].
+
+= Executing the OAuth2 request =
+
+Once you have your `UrlBuilder` configured, pass it to the `Auth.authenticate()` method, like so:
+
+{{{
+Auth.authenciate(urlBuilder, new LoginCallback() {
+  @Override
+  public void onSuccess(String token) {
+    // You now have the OAuth2 token needed to sign authenticated requests.
+  }
+  @Override
+  public void onFailure(Throwable caught) {
+    // The authentication process failed for some reason
+  }
+});
+}}}
+
+When this method is executed, the user will be shown a popup window where they can choose to grant or deny access to their data.
+
+If they choose to grant access, or have already granted access, the popup window will close and the `onSuccess()` method will fire with the OAuth2 token your app can use to make authenticated requests.
+
+If the user closes the popup window or denies access, _neither `onSuccess()` nor `onFailure()` will be executed_. `onFailure()` will only execute if there was a fatal error with the authentication process.
