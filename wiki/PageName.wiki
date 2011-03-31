@@ -1,0 +1,16 @@
+#summary Download and Setup instructions
+#labels Phase-Deploy
+
+= Introduction =
+
+First and foremost, you'll need to download and install [http://code.google.com/webtoolkit/ Google Web Toolkit].
+
+Next, you'll want to download[http://TODO gwt-oauth2-0.1-alpha.jar] and add it to the classpath for your GWT project, and add the following line to your Module.gwt.xml:
+
+{{{
+<inherits name="com.google.api.gwt.oauth2.OAuth2" />
+}}}
+
+And that's it!
+
+Now that you've installed the API client into your GWT application, you're ready to start [GettingStarted writing code that calls APIs].
