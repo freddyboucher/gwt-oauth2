@@ -1,0 +1,9 @@
+<module>
+  <inherits name="com.google.gwt.dom.DOM" />
+  <inherits name="com.google.gwt.user.User" />
+
+  <!-- Because the APIs Console requires redirect URIs to be explicitly listed, renaming
+       popupWindow.html as a ClientBundle resource would break the auth flow. So don't do it.. -->
+  <!-- TODO(jasonhall): Find a less hacky way do this, maybe by putting it in the public/ path. -->
+  <set-configuration-property name="ClientBundle.enableRenaming" value="false" />
+</module>
