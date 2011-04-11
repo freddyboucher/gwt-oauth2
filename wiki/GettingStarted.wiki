@@ -42,7 +42,7 @@ String BUZZ_READONLY_SCOPE = "https://www.googleapis.com/auth/buzz.readonly";
 String BUZZ_PHOTOS_SCOPE = "https://www.googleapis.com/auth/photos";
 
 AuthRequest req = new AuthRequest(AUTH_URL, CLIENT_ID)
-    .withScopes(READONLY_SCOPE, PHOTOS_SCOPE);
+    .withScopes(READONLY_SCOPE, PHOTOS_SCOPE); // Can specify multiple scopes here
 }}}
 
 = Executing the OAuth2 request =
