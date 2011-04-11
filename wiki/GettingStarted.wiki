@@ -29,9 +29,9 @@ You will need to find the scopes associated with your auth provider to make a re
 
 To summarize, to allow users to authorize your app, you will need to define:
 
-* The auth provider (in this case, Google)
-* Your uniquely-identifying client ID (found at the APIs Console)
-* Some scopes that you wish you access
+  * The auth provider (in this case, Google)
+  * Your uniquely-identifying client ID (found at the APIs Console)
+  * Some scopes that you wish you access
 
 With these, you can construct an `AuthRequest` like so:
 
