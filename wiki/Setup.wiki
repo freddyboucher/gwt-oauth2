@@ -12,4 +12,4 @@ Next, you'll want to download [http://TODO gwt-oauth2-0.1-alpha.jar] and add it 
 
 And that's it!
 
-Now that you've installed the API client into your GWT application, you're ready to start [GettingStarted writing code that calls APIs].
+Now that you've installed the library into your GWT application, you're ready to start [GettingStarted writing code to allow users to grant access to their data].
