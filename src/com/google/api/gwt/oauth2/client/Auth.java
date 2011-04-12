@@ -31,6 +31,19 @@ public class Auth {
     register();
   }
 
+  /**
+   * URL of the popup window that will be redirected to once access has been granted. By default,
+   * this will be the URL of the popupWindow.html resource defined in {@link AuthResources}, but can
+   * be overridden in cases where the GWT script is hosted on another domain from the popup window.
+   *
+   * <p>
+   * The popup window *must include* a script element which executes
+   * {@code window.opener.doLogin(location.hash);}, and could be copied from the popupWindow.html
+   * resource, as that is all that page does.
+   * </p>
+   */
+  public static String popupUrl = AuthResources.INSTANCE.popupWindow().getUrl();
+
   private static native void register() /*-{
     $wnd.doLogin = $entry(function(hash) {
       @com.google.api.gwt.oauth2.client.Auth::finish(Ljava/lang/String;)(hash);
@@ -43,7 +56,7 @@ public class Auth {
   private static LoginCallback callback;
 
   public static void authenticate(UrlBuilder urlBuilder, LoginCallback callback) {
-    urlBuilder.setParameter("redirect_uri", AuthResources.INSTANCE.popupWindow().getUrl());
+    urlBuilder.setParameter("redirect_uri", popupUrl);
     urlBuilder.setParameter("response_type", "token");
 
     if (window != null && window.isOpen()) {
