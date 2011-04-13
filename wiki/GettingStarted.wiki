@@ -68,6 +68,10 @@ When this method is executed, the user will be shown a popup window where they c
 
 If they choose to grant access, or have already granted access, the popup window will close and the `onSuccess()` method will fire with the OAuth2 token your app can use to make authenticated requests.
 
-If the user denies access, or closes the popup window, _neither `onSuccess()` nor `onFailure()` will be executed_. `onFailure()` will only execute if there was a fatal error with the authentication process. Remember to place code that requires a valid token _inside the callback_, not after the call to `login()`.
+If the user denies access, the callback's `onFailure()` method will be executed with a `RuntimeException` with the message `Could not find access_token in hash error=access_denied`.
+
+If the user closes the popup window, _neither `onSuccess()` nor `onFailure()` will be executed_.
+
+Remember to place code that requires a valid token _inside the callback_, not after the call to `login()`.
 
 Subsequent calls to `login()` with the same `AuthRequest` will result in `onSuccess()` being called immediately with the same token provided before, unless the token has expired, in which case the popup window will be displayed briefly again to get a new non-expired token.
