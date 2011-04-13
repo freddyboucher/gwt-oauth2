@@ -50,7 +50,7 @@ AuthRequest req = new AuthRequest(AUTH_URL, CLIENT_ID)
 Once you have your `AuthRequest` configured, get the instance of the `Auth` class, and pass your request to the `login()` method, like so:
 
 {{{
-Auth.login(req, new LoginCallback() {
+Auth.get().login(req, new LoginCallback() {
   @Override
   public void onSuccess(String token) {
     // You now have the OAuth2 token needed to sign authenticated requests.
