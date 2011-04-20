@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2011 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,13 +17,14 @@
 package com.google.api.gwt.oauth2.client;
 
 /**
- * Callback to execute when authentication is complete.
+ * Interface for storing, retrieving, and clearing stored tokens.
  *
  * @author jasonhall@google.com (Jason Hall)
  */
-public interface LoginCallback {
+interface TokenStore {
+  public void set(String key, String value);
 
-  public void onLogin(String token);
-  
-  public void onFailure(Throwable caught);
+  public String get(String key);
+
+  public void clear();
 }
