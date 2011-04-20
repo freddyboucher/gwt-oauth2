@@ -16,7 +16,7 @@ To get a client ID used to authenticate with Google, visit the [http://code.goog
 
 === Redirect URLs ===
 
-When you create an API project at the APIs Console (or elsewhere, for other auth providers), you will need to provide a redirect URL (sometimes called a callback URL) which the provider knows is safe to redirect to when the user has granted access to your app.
+When you create an API project at the APIs Console (or elsewhere, for other auth providers), you need to provide a redirect URL (sometimes called a callback URL) which the provider knows is safe to redirect to when the user has granted access to your app.
 
 The redirect page is provided by the library, and must be whitelisted as a redirect URL at the auth provider you choose.
 
@@ -25,9 +25,9 @@ The redirect URL provided by the library is *oauthWindow.html*, and is hosted at
 === Scopes ===
 Google APIs additionally require that you specify at least one authentication scope. Scopes correspond to permissions the user is granting to your application. For example, the [http://code.google.com/apis/buzz/v1/using_rest.html Buzz API] defines [http://code.google.com/apis/buzz/v1/using_rest.html#scopes scopes] to allow your application to read data, read and write data, or interact with users' photos.
 
-You will need to find the scopes associated with your auth provider to make a request for the corresponding permissions.
+You also need to find the scopes associated with your auth provider to make a request for the corresponding permissions.
 
-To summarize, to allow users to authorize your app, you will need to define:
+To summarize, to allow users to authorize your app, you need to define:
 
   * The auth provider (in this case, Google)
   * Your uniquely-identifying client ID (found at the APIs Console)
