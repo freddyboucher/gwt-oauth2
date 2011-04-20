@@ -1,6 +1,8 @@
 #summary A simple sample program, explained.
 #labels Featured,Phase-Implementation
 
+<wiki:toc max_depth="2" />
+
 This tutorial walks you through making a simple OAuth2 request to an OAuth2 provider.
 
 In this case, Google will be used as the auth provider, though the same process should work for any OAuth 2.0 provider. Please [http://code.google.com/p/gwt-oauth2/issues/entry?template=Defect%20report%20from%20user file a bug] if you find this not to be the case.
@@ -11,10 +13,10 @@ This tutorial assumes you've [Setup set up the library for your application] and
 
 The first step is to build an authentication request. This request defines the auth provider, your provider-assigned client ID.
 
-=== Client ID ===
+== Client ID ==
 To get a client ID used to authenticate with Google, visit the [http://code.google.com/apis/console Google APIs Console] and click on the *API Access* tab.
 
-=== Redirect URLs ===
+== Redirect URLs ==
 
 When you create an API project at the APIs Console (or elsewhere, for other auth providers), you need to provide a redirect URL (sometimes called a callback URL) which the provider knows is safe to redirect to when the user has granted access to your app.
 
@@ -22,7 +24,7 @@ The redirect page is provided by the library, and must be whitelisted as a redir
 
 The redirect URL provided by the library is *oauthWindow.html*, and is hosted at the base path of your GWT app. Remember to add this URL to your auth provider's redirect URLs whitelist, otherwise you will only receive errors indicating "the redirect URI does not match."
 
-=== Scopes ===
+== Scopes ==
 Google APIs additionally require that you specify at least one authentication scope. Scopes correspond to permissions the user is granting to your application. For example, the [http://code.google.com/apis/buzz/v1/using_rest.html Buzz API] defines [http://code.google.com/apis/buzz/v1/using_rest.html#scopes scopes] to allow your application to read data, read and write data, or interact with users' photos.
 
 You also need to find the scopes associated with your auth provider to make a request for the corresponding permissions.
@@ -62,7 +64,7 @@ Auth.get().login(req, new Callback<String, Throwable>() {
 });
 }}}
 
-=== What the user sees ===
+= What the user sees =
 
 When this method is executed, the user will be shown a popup window where they can choose to grant or deny access to their data.
 
