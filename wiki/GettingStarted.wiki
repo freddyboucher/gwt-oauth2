@@ -50,7 +50,7 @@ AuthRequest req = new AuthRequest(AUTH_URL, CLIENT_ID)
 Once you have your `AuthRequest` configured, get the instance of the `Auth` class, and pass your request to the `login()` method, like so:
 
 {{{
-Auth.get().login(req, new LoginCallback() {
+Auth.get().login(req, new Callback<String, Throwable>() {
   @Override
   public void onSuccess(String token) {
     // You now have the OAuth2 token needed to sign authenticated requests.
@@ -62,7 +62,7 @@ Auth.get().login(req, new LoginCallback() {
 });
 }}}
 
-=== What happens next ===
+=== What the user sees ===
 
 When this method is executed, the user will be shown a popup window where they can choose to grant or deny access to their data.
 
