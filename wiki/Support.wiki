@@ -8,7 +8,4 @@ Support for this client library:
   * [http://code.google.com/p/gwt-oauth2/issues/entry?template=Feature%20request Request a Feature]
   * [http://code.google.com/p/gwt-oauth2/issues/entry?template=Sample%20request Request a Sample]
 
-Support for Google APIs:
-  * [http://stackoverflow.com/questions/ask Ask on StackOverflow] (use tag [http://stackoverflow.com/questions/tagged/google-api google-api])
-
 Want to contribute? Please read the [BecomingAContributor Contributor's Guide].
