@@ -6,7 +6,7 @@
   <property name="gwtdir" value="${env.GWT_DIR}" />
   <property name="junitdir" value="${env.JUNIT_DIR}" />
 
-  <property name="release" value="unknown" />
+  <property name="release" value="0.1-alpha" />
 
   <property name="src.dir" value="${basedir}/src" />
   <property name="test.dir" value="${basedir}/test" />
@@ -15,8 +15,7 @@
   <property name="build.classes.dir" value="${basedir}/build/classes" />
   <property name="build.javadoc.dir" value="${basedir}/build/javadoc" />
   <property name="build.test.classes.dir" value="${basedir}/build/test/classes" />
-
-
+  <property name="build.dist.dir" value="${basedir}/build/dist" />
 
   <target name="verify" description="Check that necessary dependencies were found">
     <available file="${gwtdir}/gwt-user.jar" property="foundgwtuserjar" />
@@ -50,7 +49,6 @@
   <target name="jar" depends="build" description="Generate a JAR of the library">
     <mkdir dir="${build.dist.dir}/gwt-oauth2-${release}" />
     <jar jarfile="${build.dist.dir}/gwt-oauth2-${release}/gwt-oauth2-${release}.jar">
-      <fileset dir="." />
       <fileset dir="${build.classes.dir}" />
     </jar>
   </target>
