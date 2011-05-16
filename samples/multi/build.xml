@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="gwt-oauth2-sample-multi">
+  <property environment="env" />
+  <property name="gwtdir" value="${env.GWT_HOME}" />
+
+  <property name="src.dir" value="." />
+
+  <property name="build.dir" value="build" />
+  <property name="build.classes.dir" value="${build.dir}/classes" />
+
+  <target name="verify" description="Verifies that the required jars were found">
+    <available file="${gwtdir}/gwt-user.jar" property="foundgwtuserjar" />
+    <fail unless="foundgwtuserjar" message="Cannot find gwt-user.jar" />
+
+    <available file="${gwtdir}/gwt-dev.jar" property="foundgwtdevjar" />
+    <fail unless="foundgwtdevjar" message="Cannot find gwt-dev.jar" />
+  </target>
+
+  <target name="javac" depends="clean, verify" description="Compile sources with javac">
+    <mkdir dir="${build.classes.dir}" />
+
+    <javac srcdir="${src.dir}" includes="${src.dir}/**/*.java" encoding="UTF-8"
+      destdir="${build.classes.dir}">
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${src.dir}" />
+        <pathelement location="../../src/" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+      </classpath>
+    </javac>
+    <copy todir="${build.classes.dir}">
+      <fileset dir="${src.dir}" />
+    </copy>
+  </target>
+
+  <target name="build" depends="javac" description="Compile sources with GWT compiler">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${src.dir}" />
+        <pathelement location="../../src/" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+        <pathelement location="${gwtdir}/gwt-dev.jar" />
+      </classpath>
+
+      <jvmarg value="-Xmx256M" />
+      <arg value="com.google.api.gwt.oauth2.samples.multi.OAuth2Sample" />
+    </java>
+  </target>
+
+  <target name="clean" description="Remove generated files">
+    <delete dir="war" />
+    <delete dir="${build.classes.dir}" />
+  </target>
+</project>
