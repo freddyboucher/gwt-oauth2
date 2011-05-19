@@ -41,6 +41,8 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
   public void onModuleLoad() {
     addGoogleAuth();
     addInstagramAuth();
+    addFoursquareAuth();
+    addFacebookAuth();
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -66,7 +68,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(GOOGLE_AUTH_URL, GOOGLE_CLIENT_ID) //
+        AuthRequest req = new AuthRequest(GOOGLE_AUTH_URL, GOOGLE_CLIENT_ID)
             .withScopes(BUZZ_READONLY_SCOPE);
 
         // Calling login() will display a popup to the user the first time it is
@@ -116,10 +118,97 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(INSTAGRAM_AUTH_URL, INSTAGRAM_CLIENT_ID) //
+        AuthRequest req = new AuthRequest(INSTAGRAM_AUTH_URL, INSTAGRAM_CLIENT_ID)
             .withScopes(INSTAGRAM_COMMENTS_SCOPE, INSTAGRAM_LIKES_SCOPE)
             // Instagram expects a plus-delimited list of scopes
             .withScopeDelimiter("+");
+        AUTH.login(req, new Callback<String, Throwable>() {
+          @Override
+          public void onSuccess(String token) {
+            Window.alert("Got an OAuth token:\n" + token);
+          }
+
+          @Override
+          public void onFailure(Throwable caught) {
+            Window.alert("Error:\n" + caught.getMessage());
+          }
+        });
+      }
+    });
+    RootPanel.get().add(button);
+  }
+
+
+  // //////////////////////////////////////////////////////////////////////////
+  // AUTHENTICATING WITH FOURSQURE/////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  private static final String FOURSQUARE_AUTH_URL = "https://foursquare.com/oauth2/authenticate";
+
+  // This app's personal client ID assigned by the Foursquare OAuth page
+  // (https://foursquare.com/oauth/)
+  private static final String FOURSQUARE_CLIENT_ID =
+      "SL3GLC45VW5T2KBD4XRQTOJQT5Y0E5CCUA10GI4RGDJ2BQX4";
+
+  // Adds a button to the page that asks for authentication from Foursquare.
+  private void addFoursquareAuth() {
+    // Since the auth flow requires opening a popup window, it must be started
+    // as a direct result of a user action, such as clicking a button or link.
+    // Otherwise, a browser's popup blocker may block the popup.
+    Button button = new Button("Authenticate with Foursquare");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        AuthRequest req = new AuthRequest(FOURSQUARE_AUTH_URL, FOURSQUARE_CLIENT_ID);
+        AUTH.login(req, new Callback<String, Throwable>() {
+          @Override
+          public void onSuccess(String token) {
+            Window.alert("Got an OAuth token:\n" + token);
+          }
+
+          @Override
+          public void onFailure(Throwable caught) {
+            Window.alert("Error:\n" + caught.getMessage());
+          }
+        });
+      }
+    });
+    RootPanel.get().add(button);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // AUTHENTICATING WITH FACEBOOK /////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  private static final String FACEBOOK_AUTH_URL = "http://www.facebook.com/dialog/oauth";
+
+  // This app's personal client ID assigned by the Facebook Developer App
+  // (http://www.facebook.com/developers).
+  private static final String FACEBOOK_CLIENT_ID = "215385608478782";
+
+  // All available scopes are listed here:
+  // http://developers.facebook.com/docs/authentication/permissions/
+  // This scope allows the app to access the user's email address.
+  private static final String FACEBOOK_EMAIL_SCOPE = "email";
+
+  // This scope allows the app to access the user's birthday.
+  private static final String FACEBOOK_BIRTHDAY_SCOPE = "user_birthday";
+
+  // Adds a button to the page that asks for authentication from Facebook.
+  // Note that Facebook does not allow localhost as a redirect URL, so while
+  // this code will work when hosted, it will not work when testing locally.
+  private void addFacebookAuth() {
+    // Since the auth flow requires opening a popup window, it must be started
+    // as a direct result of a user action, such as clicking a button or link.
+    // Otherwise, a browser's popup blocker may block the popup.
+    Button button = new Button("Authenticate with Facebook");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        AuthRequest req = new AuthRequest(FACEBOOK_AUTH_URL, FACEBOOK_CLIENT_ID)
+            .withScopes(FACEBOOK_EMAIL_SCOPE, FACEBOOK_BIRTHDAY_SCOPE)
+            // Facebook expects a comma-delimited list of scopes
+            .withScopeDelimiter(",");
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
