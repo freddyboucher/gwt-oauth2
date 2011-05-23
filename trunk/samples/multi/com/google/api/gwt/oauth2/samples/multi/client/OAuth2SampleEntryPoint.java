@@ -43,6 +43,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     addInstagramAuth();
     addFoursquareAuth();
     addFacebookAuth();
+    addDailymotionAuth();
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -209,6 +210,49 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
             .withScopes(FACEBOOK_EMAIL_SCOPE, FACEBOOK_BIRTHDAY_SCOPE)
             // Facebook expects a comma-delimited list of scopes
             .withScopeDelimiter(",");
+        AUTH.login(req, new Callback<String, Throwable>() {
+          @Override
+          public void onSuccess(String token) {
+            Window.alert("Got an OAuth token:\n" + token);
+          }
+
+          @Override
+          public void onFailure(Throwable caught) {
+            Window.alert("Error:\n" + caught.getMessage());
+          }
+        });
+      }
+    });
+    RootPanel.get().add(button);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // AUTHENTICATING WITH DAILYMOTION //////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  // Note the addition of the ?display=popup query parameter. This is not
+  // strictly required, but provides a better UI.
+  // TODO(jasonhall): Allow arbitrary query parameters so this doesn't have to
+  // be added to the base auth URL.
+  private static final String DAILYMOTION_AUTH_URL =
+      "https://api.dailymotion.com/oauth/authorize?display=popup";
+
+  // This app's personal client ID assigned by the Dailymotion Developer App
+  // (http://www.dailymotion.com/profile/developer/new).
+  private static final String DAILYMOTION_CLIENT_ID = "e76b8eed0083ccf9abd2";
+
+  // Adds a button to the page that asks for authentication from DAILYMOTION.
+  // Note that Dailymotion does not allow localhost as a redirect URL, so while
+  // this code will work when hosted, it will not work when testing locally.
+  private void addDailymotionAuth() {
+    // Since the auth flow requires opening a popup window, it must be started
+    // as a direct result of a user action, such as clicking a button or link.
+    // Otherwise, a browser's popup blocker may block the popup.
+    Button button = new Button("Authenticate with Dailymotion");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        AuthRequest req = new AuthRequest(DAILYMOTION_AUTH_URL, DAILYMOTION_CLIENT_ID);
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
