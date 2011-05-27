@@ -16,7 +16,6 @@
 
 package com.google.api.gwt.oauth2.client;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
