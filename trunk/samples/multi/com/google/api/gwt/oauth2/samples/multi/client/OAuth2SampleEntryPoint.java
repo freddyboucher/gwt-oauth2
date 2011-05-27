@@ -18,7 +18,7 @@ package com.google.api.gwt.oauth2.samples.multi.client;
 
 import com.google.api.gwt.oauth2.client.Auth;
 import com.google.api.gwt.oauth2.client.AuthRequest;
-import com.google.gwt.core.client.Callback;
+import com.google.api.gwt.oauth2.client.Callback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
