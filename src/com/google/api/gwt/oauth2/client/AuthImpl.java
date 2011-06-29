@@ -122,12 +122,12 @@ class AuthImpl extends Auth {
   private static class RealUrlCodex implements UrlCodex {
     @Override
     public String encode(String url) {
-      return URL.encode(url);
+      return URL.encodeQueryString(url);
     }
 
     @Override
     public String decode(String url) {
-      return URL.decode(url);
+      return URL.decodeQueryString(url);
     }
   }
 }

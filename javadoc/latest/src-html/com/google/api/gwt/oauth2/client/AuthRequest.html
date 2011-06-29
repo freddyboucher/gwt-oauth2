@@ -69,41 +69,48 @@
 <FONT color="green">066</FONT>            .append(authUrl.contains("?") ? "&amp;" : "?")<a name="line.66"></a>
 <FONT color="green">067</FONT>            .append("client_id").append("=").append(urlCodex.encode(clientId))<a name="line.67"></a>
 <FONT color="green">068</FONT>            .append("&amp;").append("response_type").append("=").append("token")<a name="line.68"></a>
-<FONT color="green">069</FONT>            .append("&amp;").append("scope").append("=").append(urlCodex.encode(scopesToString()))<a name="line.69"></a>
+<FONT color="green">069</FONT>            .append("&amp;").append("scope").append("=").append(scopesToString(urlCodex))<a name="line.69"></a>
 <FONT color="green">070</FONT>            .toString();<a name="line.70"></a>
 <FONT color="green">071</FONT>      }<a name="line.71"></a>
 <FONT color="green">072</FONT>    <a name="line.72"></a>
 <FONT color="green">073</FONT>      /** Returns a unique representation of this request for use as a cookie name. */<a name="line.73"></a>
 <FONT color="green">074</FONT>      String asString() {<a name="line.74"></a>
-<FONT color="green">075</FONT>        return clientId + "-----" + scopesToString();<a name="line.75"></a>
-<FONT color="green">076</FONT>      }<a name="line.76"></a>
-<FONT color="green">077</FONT>    <a name="line.77"></a>
-<FONT color="green">078</FONT>      /** Returns a comma-delimited list of scopes. */<a name="line.78"></a>
-<FONT color="green">079</FONT>      private String scopesToString() {<a name="line.79"></a>
-<FONT color="green">080</FONT>        if (scopes == null || scopes.length == 0) {<a name="line.80"></a>
-<FONT color="green">081</FONT>          return "";<a name="line.81"></a>
-<FONT color="green">082</FONT>        }<a name="line.82"></a>
-<FONT color="green">083</FONT>        StringBuilder sb = new StringBuilder();<a name="line.83"></a>
-<FONT color="green">084</FONT>        boolean needsSeparator = false;<a name="line.84"></a>
-<FONT color="green">085</FONT>        for (String scope : scopes) {<a name="line.85"></a>
-<FONT color="green">086</FONT>          if (needsSeparator) {<a name="line.86"></a>
-<FONT color="green">087</FONT>            sb.append(scopeDelimiter);<a name="line.87"></a>
-<FONT color="green">088</FONT>          }<a name="line.88"></a>
-<FONT color="green">089</FONT>          needsSeparator = true;<a name="line.89"></a>
-<FONT color="green">090</FONT>          sb.append(scope);<a name="line.90"></a>
-<FONT color="green">091</FONT>        }<a name="line.91"></a>
-<FONT color="green">092</FONT>        return sb.toString();<a name="line.92"></a>
-<FONT color="green">093</FONT>      }<a name="line.93"></a>
-<FONT color="green">094</FONT>    <a name="line.94"></a>
-<FONT color="green">095</FONT>      /** Returns an {@link AuthRequest} represented by the string serialization. */<a name="line.95"></a>
-<FONT color="green">096</FONT>      static AuthRequest fromString(String str) {<a name="line.96"></a>
-<FONT color="green">097</FONT>        String[] parts = str.split("-----");<a name="line.97"></a>
-<FONT color="green">098</FONT>        String clientId = parts[0];<a name="line.98"></a>
-<FONT color="green">099</FONT>        String[] scopes = parts.length == 2 ? parts[1].split(",") : new String[0];<a name="line.99"></a>
-<FONT color="green">100</FONT>        AuthRequest req = new AuthRequest("", clientId).withScopes(scopes);<a name="line.100"></a>
-<FONT color="green">101</FONT>        return req;<a name="line.101"></a>
-<FONT color="green">102</FONT>      }<a name="line.102"></a>
-<FONT color="green">103</FONT>    }<a name="line.103"></a>
+<FONT color="green">075</FONT>        // Don't need to URL-encode the scopes since they're just stored here.<a name="line.75"></a>
+<FONT color="green">076</FONT>        return clientId + "-----" + scopesToString(null);<a name="line.76"></a>
+<FONT color="green">077</FONT>      }<a name="line.77"></a>
+<FONT color="green">078</FONT>    <a name="line.78"></a>
+<FONT color="green">079</FONT>      /**<a name="line.79"></a>
+<FONT color="green">080</FONT>       * Returns a comma-delimited list of scopes.<a name="line.80"></a>
+<FONT color="green">081</FONT>       *<a name="line.81"></a>
+<FONT color="green">082</FONT>       * &lt;p&gt;These scopes will be URL-encoded if the given codex is not null.&lt;/p&gt;<a name="line.82"></a>
+<FONT color="green">083</FONT>       */<a name="line.83"></a>
+<FONT color="green">084</FONT>      private String scopesToString(Auth.UrlCodex urlCodex) {<a name="line.84"></a>
+<FONT color="green">085</FONT>        if (scopes == null || scopes.length == 0) {<a name="line.85"></a>
+<FONT color="green">086</FONT>          return "";<a name="line.86"></a>
+<FONT color="green">087</FONT>        }<a name="line.87"></a>
+<FONT color="green">088</FONT>        StringBuilder sb = new StringBuilder();<a name="line.88"></a>
+<FONT color="green">089</FONT>        boolean needsSeparator = false;<a name="line.89"></a>
+<FONT color="green">090</FONT>        for (String scope : scopes) {<a name="line.90"></a>
+<FONT color="green">091</FONT>          if (needsSeparator) {<a name="line.91"></a>
+<FONT color="green">092</FONT>            sb.append(scopeDelimiter);<a name="line.92"></a>
+<FONT color="green">093</FONT>          }<a name="line.93"></a>
+<FONT color="green">094</FONT>          needsSeparator = true;<a name="line.94"></a>
+<FONT color="green">095</FONT>    <a name="line.95"></a>
+<FONT color="green">096</FONT>          // Use the URL codex to encode each scope, if provided.<a name="line.96"></a>
+<FONT color="green">097</FONT>          sb.append(urlCodex == null ? scope : urlCodex.encode(scope));<a name="line.97"></a>
+<FONT color="green">098</FONT>        }<a name="line.98"></a>
+<FONT color="green">099</FONT>        return sb.toString();<a name="line.99"></a>
+<FONT color="green">100</FONT>      }<a name="line.100"></a>
+<FONT color="green">101</FONT>    <a name="line.101"></a>
+<FONT color="green">102</FONT>      /** Returns an {@link AuthRequest} represented by the string serialization. */<a name="line.102"></a>
+<FONT color="green">103</FONT>      static AuthRequest fromString(String str) {<a name="line.103"></a>
+<FONT color="green">104</FONT>        String[] parts = str.split("-----");<a name="line.104"></a>
+<FONT color="green">105</FONT>        String clientId = parts[0];<a name="line.105"></a>
+<FONT color="green">106</FONT>        String[] scopes = parts.length == 2 ? parts[1].split(",") : new String[0];<a name="line.106"></a>
+<FONT color="green">107</FONT>        AuthRequest req = new AuthRequest("", clientId).withScopes(scopes);<a name="line.107"></a>
+<FONT color="green">108</FONT>        return req;<a name="line.108"></a>
+<FONT color="green">109</FONT>      }<a name="line.109"></a>
+<FONT color="green">110</FONT>    }<a name="line.110"></a>
 
 
 
