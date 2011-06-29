@@ -181,7 +181,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
   // AUTHENTICATING WITH FACEBOOK /////////////////////////////////////////////
   // //////////////////////////////////////////////////////////////////////////
 
-  private static final String FACEBOOK_AUTH_URL = "http://www.facebook.com/dialog/oauth";
+  private static final String FACEBOOK_AUTH_URL = "https://www.facebook.com/dialog/oauth";
 
   // This app's personal client ID assigned by the Facebook Developer App
   // (http://www.facebook.com/developers).

@@ -66,17 +66,22 @@ public class AuthRequest {
         .append(authUrl.contains("?") ? "&" : "?")
         .append("client_id").append("=").append(urlCodex.encode(clientId))
         .append("&").append("response_type").append("=").append("token")
-        .append("&").append("scope").append("=").append(urlCodex.encode(scopesToString()))
+        .append("&").append("scope").append("=").append(scopesToString(urlCodex))
         .toString();
   }
 
   /** Returns a unique representation of this request for use as a cookie name. */
   String asString() {
-    return clientId + "-----" + scopesToString();
+    // Don't need to URL-encode the scopes since they're just stored here.
+    return clientId + "-----" + scopesToString(null);
   }
 
-  /** Returns a comma-delimited list of scopes. */
-  private String scopesToString() {
+  /**
+   * Returns a comma-delimited list of scopes.
+   *
+   * <p>These scopes will be URL-encoded if the given codex is not null.</p>
+   */
+  private String scopesToString(Auth.UrlCodex urlCodex) {
     if (scopes == null || scopes.length == 0) {
       return "";
     }
@@ -87,7 +92,9 @@ public class AuthRequest {
         sb.append(scopeDelimiter);
       }
       needsSeparator = true;
-      sb.append(scope);
+
+      // Use the URL codex to encode each scope, if provided.
+      sb.append(urlCodex == null ? scope : urlCodex.encode(scope));
     }
     return sb.toString();
   }
