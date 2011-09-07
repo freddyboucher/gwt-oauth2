@@ -241,4 +241,16 @@ public abstract class Auth {
       return info;
     }
   }
+
+  /**
+   * @param req The authentication request of which to request the expiration
+   *        status.
+   * @return The number of milliseconds until the token expires, or negative
+   *         infinity if no token was found.
+   */
+  public double expiresIn(AuthRequest req) {
+    String val = tokenStore.get(req.asString());
+    return val == null ? Double.NEGATIVE_INFINITY :
+        Double.valueOf(TokenInfo.fromString(val).expires) - clock.now();
+  }
 }
