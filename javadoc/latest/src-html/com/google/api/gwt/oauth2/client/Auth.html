@@ -244,7 +244,19 @@
 <FONT color="green">241</FONT>          return info;<a name="line.241"></a>
 <FONT color="green">242</FONT>        }<a name="line.242"></a>
 <FONT color="green">243</FONT>      }<a name="line.243"></a>
-<FONT color="green">244</FONT>    }<a name="line.244"></a>
+<FONT color="green">244</FONT>    <a name="line.244"></a>
+<FONT color="green">245</FONT>      /**<a name="line.245"></a>
+<FONT color="green">246</FONT>       * @param req The authentication request of which to request the expiration<a name="line.246"></a>
+<FONT color="green">247</FONT>       *        status.<a name="line.247"></a>
+<FONT color="green">248</FONT>       * @return The number of milliseconds until the token expires, or negative<a name="line.248"></a>
+<FONT color="green">249</FONT>       *         infinity if no token was found.<a name="line.249"></a>
+<FONT color="green">250</FONT>       */<a name="line.250"></a>
+<FONT color="green">251</FONT>      public double expiresIn(AuthRequest req) {<a name="line.251"></a>
+<FONT color="green">252</FONT>        String val = tokenStore.get(req.asString());<a name="line.252"></a>
+<FONT color="green">253</FONT>        return val == null ? Double.NEGATIVE_INFINITY :<a name="line.253"></a>
+<FONT color="green">254</FONT>            Double.valueOf(TokenInfo.fromString(val).expires) - clock.now();<a name="line.254"></a>
+<FONT color="green">255</FONT>      }<a name="line.255"></a>
+<FONT color="green">256</FONT>    }<a name="line.256"></a>
 
 
 

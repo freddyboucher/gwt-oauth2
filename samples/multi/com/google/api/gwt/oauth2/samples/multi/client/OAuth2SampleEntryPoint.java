@@ -69,7 +69,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(GOOGLE_AUTH_URL, GOOGLE_CLIENT_ID)
+        final AuthRequest req = new AuthRequest(GOOGLE_AUTH_URL, GOOGLE_CLIENT_ID)
             .withScopes(BUZZ_READONLY_SCOPE);
 
         // Calling login() will display a popup to the user the first time it is
@@ -79,7 +79,8 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
-            Window.alert("Got an OAuth token:\n" + token);
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
           }
 
           @Override
@@ -119,14 +120,15 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(INSTAGRAM_AUTH_URL, INSTAGRAM_CLIENT_ID)
+        final AuthRequest req = new AuthRequest(INSTAGRAM_AUTH_URL, INSTAGRAM_CLIENT_ID)
             .withScopes(INSTAGRAM_COMMENTS_SCOPE, INSTAGRAM_LIKES_SCOPE)
             // Instagram expects a plus-delimited list of scopes
             .withScopeDelimiter("+");
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
-            Window.alert("Got an OAuth token:\n" + token);
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
           }
 
           @Override
@@ -160,11 +162,12 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(FOURSQUARE_AUTH_URL, FOURSQUARE_CLIENT_ID);
+        final AuthRequest req = new AuthRequest(FOURSQUARE_AUTH_URL, FOURSQUARE_CLIENT_ID);
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
-            Window.alert("Got an OAuth token:\n" + token);
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
           }
 
           @Override
@@ -206,14 +209,15 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(FACEBOOK_AUTH_URL, FACEBOOK_CLIENT_ID)
+        final AuthRequest req = new AuthRequest(FACEBOOK_AUTH_URL, FACEBOOK_CLIENT_ID)
             .withScopes(FACEBOOK_EMAIL_SCOPE, FACEBOOK_BIRTHDAY_SCOPE)
             // Facebook expects a comma-delimited list of scopes
             .withScopeDelimiter(",");
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
-            Window.alert("Got an OAuth token:\n" + token);
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
           }
 
           @Override
@@ -252,11 +256,12 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        AuthRequest req = new AuthRequest(DAILYMOTION_AUTH_URL, DAILYMOTION_CLIENT_ID);
+        final AuthRequest req = new AuthRequest(DAILYMOTION_AUTH_URL, DAILYMOTION_CLIENT_ID);
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
-            Window.alert("Got an OAuth token:\n" + token);
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
           }
 
           @Override
