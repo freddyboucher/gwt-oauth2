@@ -21,22 +21,11 @@ package com.google.api.gwt.oauth2.client;
  * @param <T> The type returned on success
  * @param <F> The type returned on failure
  * 
- * @deprecated This class is copied from GWT trunk, and will be included in GWT
- * 2.4, at which point the usages will transition over to that class instead.
+ * @deprecated This class is simply a stand-in for GWT's {@link Callback} class,
+ * and the two can be used interchangeably within this library. It is included
+ * purely for backwards compatibility. It will be removed soon.
  */
-public interface Callback<T, F> {
-
-  /**
-   * Called when an asynchronous call fails to complete normally.
-   * 
-   * @param reason failure encountered
-   */
-  void onFailure(F reason);
-
-  /**
-   * Called when an asynchronous call completes successfully.
-   * 
-   * @param result the value returned
-   */
-  void onSuccess(T result);
+@Deprecated
+public interface Callback<T, F>
+    extends com.google.gwt.core.client.Callback<T, F> {
 }

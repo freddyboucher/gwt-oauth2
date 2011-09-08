@@ -16,6 +16,7 @@
 
 package com.google.api.gwt.oauth2.client;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
