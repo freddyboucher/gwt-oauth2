@@ -104,6 +104,7 @@
         author="true"
         protected="true"
         linksource="true"
+        additionalparam="-notimestamp"
         windowtitle="OAuth 2.0 client library for GWT - ${release}">
       <sourcepath>
         <pathelement location="src" />
