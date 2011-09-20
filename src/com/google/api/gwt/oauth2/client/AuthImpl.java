@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,12 +21,11 @@ import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
 
 /**
  * Real implementation of {@link Auth}, used in real GWT applications.
- *
+ * 
  * @author jasonhall@google.com (Jason Hall)
  */
 class AuthImpl extends Auth {
@@ -46,9 +45,9 @@ class AuthImpl extends Auth {
    * Returns the correct {@link TokenStore} implementation to use based on
    * browser support for localStorage.
    */
-  // TODO(jasonhall): Will this result in CookieStoreImpl being compiled out for
-  // browsers that support localStorage, and vice versa? If not, this should be
-  // a deferred binding rule.
+  // TODO(jasonhall): This will not result in CookieStoreImpl being compiled out
+  // for browsers that support localStorage, and vice versa? If not, this should
+  // be a deferred binding rule.
   private static TokenStoreImpl getTokenStore() {
     return Storage.isLocalStorageSupported() ? new TokenStoreImpl() : new CookieStoreImpl();
   }
@@ -58,11 +57,12 @@ class AuthImpl extends Auth {
    */
   private native void register() /*-{
     var self = this;
-    if (!$wnd.doLogin) {
-      $wnd.doLogin = $entry(function(hash) {
-        self.@com.google.api.gwt.oauth2.client.Auth::finish(Ljava/lang/String;)(hash);
-      });
+    if (!$wnd.oauth2) {
+      $wnd.oauth2 = {};
     }
+    $wnd.oauth2.__doLogin = $entry(function(hash) {
+      self.@com.google.api.gwt.oauth2.client.Auth::finish(Ljava/lang/String;)(hash);
+    });
   }-*/;
 
   /**
@@ -76,8 +76,8 @@ class AuthImpl extends Auth {
     } else {
       window = openWindow(authUrl);
       if (window == null) {
-        callback.onFailure(
-            new RuntimeException("The authentication popup window appears to have been blocked"));
+        callback.onFailure(new RuntimeException(
+            "The authentication popup window appears to have been blocked"));
       }
     }
   }
@@ -122,13 +122,16 @@ class AuthImpl extends Auth {
   /** Real GWT implementation of UrlCodex. */
   private static class RealUrlCodex implements UrlCodex {
     @Override
-    public String encode(String url) {
-      return URL.encodeQueryString(url);
-    }
+    public native String encode(String url) /*-{
+      var regexp = /%20/g;
+      return encodeURIComponent(url).replace(regexp, "+");
+    }-*/;
 
     @Override
-    public String decode(String url) {
-      return URL.decodeQueryString(url);
-    }
+    public native String decode(String url) /*-{
+      var regexp = /\+/g;
+      return decodeURIComponent(url.replace(regexp, "%20"));
+    }-*/;
+
   }
 }
