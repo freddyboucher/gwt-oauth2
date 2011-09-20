@@ -44,6 +44,12 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     addFoursquareAuth();
     addFacebookAuth();
     addDailymotionAuth();
+
+    // Export the JS method that can be called in pure JS
+    Auth.export();
+    addGoogleAuthNative();
+
+    addClearTokens();
   }
 
   // //////////////////////////////////////////////////////////////////////////
@@ -269,6 +275,59 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
             Window.alert("Error:\n" + caught.getMessage());
           }
         });
+      }
+    });
+    RootPanel.get().add(button);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // AUTHENTICATING WITH GOOGLE (Using native JavaScript) /////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  // Adds a button to the page that asks for authentication from Google, using
+  // native JS.
+  // This demonstrates how a GWT app can export the JS function so that regular
+  // JS on the page can use the same OAuth 2.0 code. In this sample, we use
+  // JSNI, even though this would likely only rarely be useful, but it
+  // demonstrates that it's possible at least.
+  // See the other sample app for a demonstration of how to use this library in
+  // pure JS.
+  private void addGoogleAuthNative() {
+    Button button = new Button("Authenticate with Google (using native JS)");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public native void onClick(ClickEvent event) /*-{
+        $wnd.oauth2.login({
+          "authUrl" : "https://accounts.google.com/o/oauth2/auth",
+          "clientId" : "452237527106.apps.googleusercontent.com",
+          "scopes" : [
+            "https://www.googleapis.com/auth/buzz.readonly"
+          ]
+        }, function(token) {
+          $wnd.alert("Got an OAuth token:\n" + token + "\n"
+              + "Token expires in " + $wnd.oauth2.expiresIn(req) + " ms\n");
+        }, function(error) {
+          $wnd.alert("Error:\n" + error);
+        });
+      }-*/;
+    });
+    RootPanel.get().add(button);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // CLEARING STORED TOKENS ///////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  // Clears all tokens stored in the browser by this library. Subsequent calls
+  // to login() will result in the popup being shown, though it may immediately
+  // disappear if the token has not expired.
+  private void addClearTokens() {
+    Button button = new Button("Clear stored tokens");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Auth.get().clearAllTokens();
+        Window.alert("All tokens cleared");
       }
     });
     RootPanel.get().add(button);

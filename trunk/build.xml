@@ -87,10 +87,6 @@
     </junit>
   </target>
 
-  <target name="clean" description="Remove generated files">
-    <delete dir="${build.dir}"/>
-  </target>
-
   <target name="javadoc">
     <delete dir="${build.javadoc.dir}" />
     <mkdir dir="${build.javadoc.dir}" />
@@ -112,5 +108,45 @@
       <link href="http://google-web-toolkit.googlecode.com/svn/javadoc/2.1/" />
       <link href="http://java.sun.com/javase/6/docs/api" />
     </javadoc>
+  </target>
+
+
+  <target name="script-javac" depends="clean, verify" description="Compile sources with javac">
+    <mkdir dir="${build.classes.dir}" />
+
+    <javac srcdir="${src.dir}" includes="${src.dir}/**/*.java" encoding="UTF-8"
+      destdir="${build.classes.dir}">
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${src.dir}" />
+        <pathelement location="../../src/" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+      </classpath>
+    </javac>
+    <copy todir="${build.classes.dir}">
+      <fileset dir="${src.dir}" />
+    </copy>
+  </target>
+
+  <target name="script-build" depends="script-javac" description="Compile sources with GWT compiler">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${src.dir}" />
+        <pathelement location="${src.dir}/script/" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+        <pathelement location="${gwtdir}/gwt-dev.jar" />
+      </classpath>
+
+      <jvmarg value="-Xmx256M" />
+      <arg value="com.google.api.gwt.oauth2.script.OAuth2Script" />
+      <arg value="-XdisableClassMetadata" />
+      <arg value="-XdisableCastChecking" />
+    </java>
+  </target>
+
+  <target name="clean" description="Remove generated files">
+    <delete dir="war" />
+    <delete dir="${build.classes.dir}" />
   </target>
 </project>
