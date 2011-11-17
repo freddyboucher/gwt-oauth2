@@ -163,11 +163,27 @@ Provides methods to manage authentication flow.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html#setOAuthWindowUrl(java.lang.String)">setOAuthWindowUrl</A></B>(<A HREF="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;url)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set the oauth window URL to use to authenticate.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html#setWindowHeight(int)">setWindowHeight</A></B>(int&nbsp;height)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the height of the OAuth 2.0 popup dialog, in pixels.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html#setWindowWidth(int)">setWindowWidth</A></B>(int&nbsp;width)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -208,7 +224,7 @@ public static final <A HREF="../../../../../../com/google/api/gwt/oauth2/client/
 <A NAME="login(com.google.api.gwt.oauth2.client.AuthRequest, com.google.api.gwt.oauth2.client.Callback)"><!-- --></A><H3>
 login</H3>
 <PRE>
-public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.77"><B>login</B></A>(<A HREF="../../../../../../com/google/api/gwt/oauth2/client/AuthRequest.html" title="class in com.google.api.gwt.oauth2.client">AuthRequest</A>&nbsp;req,
+public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.80"><B>login</B></A>(<A HREF="../../../../../../com/google/api/gwt/oauth2/client/AuthRequest.html" title="class in com.google.api.gwt.oauth2.client">AuthRequest</A>&nbsp;req,
                   <A HREF="../../../../../../com/google/api/gwt/oauth2/client/Callback.html" title="interface in com.google.api.gwt.oauth2.client">Callback</A>&lt;<A HREF="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,<A HREF="http://java.sun.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&gt;&nbsp;callback)</PRE>
 <DL>
 <DD>Request an access token from an OAuth 2.0 provider.
@@ -236,12 +252,34 @@ public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client
 <A NAME="setOAuthWindowUrl(java.lang.String)"><!-- --></A><H3>
 setOAuthWindowUrl</H3>
 <PRE>
-public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.124"><B>setOAuthWindowUrl</B></A>(<A HREF="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;url)</PRE>
+public <A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A> <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.125"><B>setOAuthWindowUrl</B></A>(<A HREF="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;url)</PRE>
 <DL>
-<DD>Set the oauth window URL to use to authenticate. This will be provided by
- default, and is essentially only provided to enable authentication in the
- embedded Explorer.
+<DD>Set the oauth window URL to use to authenticate.
 <P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setWindowHeight(int)"><!-- --></A><H3>
+setWindowHeight</H3>
+<PRE>
+public <A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A> <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.131"><B>setWindowHeight</B></A>(int&nbsp;height)</PRE>
+<DL>
+<DD>Sets the height of the OAuth 2.0 popup dialog, in pixels. The default is 600px.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setWindowWidth(int)"><!-- --></A><H3>
+setWindowWidth</H3>
+<PRE>
+public <A HREF="../../../../../../com/google/api/gwt/oauth2/client/Auth.html" title="class in com.google.api.gwt.oauth2.client">Auth</A> <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.137"><B>setWindowWidth</B></A>(int&nbsp;width)</PRE>
+<DL>
 <DD><DL>
 </DL>
 </DD>
@@ -251,7 +289,7 @@ public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client
 <A NAME="clearAllTokens()"><!-- --></A><H3>
 clearAllTokens</H3>
 <PRE>
-public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.226"><B>clearAllTokens</B></A>()</PRE>
+public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.240"><B>clearAllTokens</B></A>()</PRE>
 <DL>
 <DD>Clears all tokens stored by this class.
 
@@ -270,7 +308,7 @@ public void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client
 <A NAME="expiresIn(com.google.api.gwt.oauth2.client.AuthRequest)"><!-- --></A><H3>
 expiresIn</H3>
 <PRE>
-public double <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.254"><B>expiresIn</B></A>(<A HREF="../../../../../../com/google/api/gwt/oauth2/client/AuthRequest.html" title="class in com.google.api.gwt.oauth2.client">AuthRequest</A>&nbsp;req)</PRE>
+public double <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.268"><B>expiresIn</B></A>(<A HREF="../../../../../../com/google/api/gwt/oauth2/client/AuthRequest.html" title="class in com.google.api.gwt.oauth2.client">AuthRequest</A>&nbsp;req)</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -281,7 +319,7 @@ public double <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/clie
 <A NAME="export()"><!-- --></A><H3>
 export</H3>
 <PRE>
-public static void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.275"><B>export</B></A>()</PRE>
+public static void <A HREF="../../../../../../src-html/com/google/api/gwt/oauth2/client/Auth.html#line.289"><B>export</B></A>()</PRE>
 <DL>
 <DD>Exports a function to the page's global scope that can be called from regular JavaScript.
 

@@ -74,7 +74,7 @@ class AuthImpl extends Auth {
     if (window != null && window.isOpen()) {
       callback.onFailure(new IllegalStateException("Authentication in progress"));
     } else {
-      window = openWindow(authUrl);
+      window = openWindow(authUrl, height, width);
       if (window == null) {
         callback.onFailure(new RuntimeException(
             "The authentication popup window appears to have been blocked"));
@@ -93,8 +93,8 @@ class AuthImpl extends Auth {
 
   // Because GWT's Window.open() method does not return a reference to the
   // newly-opened window, we have to manage this all ourselves manually...
-  private static native Window openWindow(String url) /*-{
-    return $wnd.open(url, 'popupWindow', 'width=800,height=600');
+  private static native Window openWindow(String url, int height, int width) /*-{
+    return $wnd.open(url, 'popupWindow', 'width=' + width + ',height=' + height);
   }-*/;
 
   static final class Window extends JavaScriptObject {
