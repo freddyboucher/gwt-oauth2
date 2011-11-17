@@ -15,7 +15,7 @@
    (function() {
      var GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
      var GOOGLE_CLIENT_ID = "549650950581.apps.googleusercontent.com";
-     var BUZZ_READONLY_SCOPE = "https://www.googleapis.com/auth/buzz.readonly";
+     var PLUS_ME_SCOPE = "https://www.googleapis.com/auth/plus.me";
 
      var button = document.createElement("button");
      button.innerText = "Authenticate with Google";
@@ -23,7 +23,7 @@
        var req = {
          "authUrl" : GOOGLE_AUTH_URL,
          "clientId" : GOOGLE_CLIENT_ID,
-         "scopes" : [ BUZZ_READONLY_SCOPE ],
+         "scopes" : [ PLUS_ME_SCOPE ],
        };
        oauth2.login(req, function(token) {
          alert("Got an OAuth token:\n" + token + "\n"
