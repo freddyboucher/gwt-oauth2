@@ -40,6 +40,9 @@ public abstract class Auth {
   final Scheduler scheduler;
   String oauthWindowUrl;
 
+  int height = 600;
+  int width = 800;
+
   Auth(TokenStore tokenStore, Clock clock, UrlCodex urlCodex, Scheduler scheduler,
       String oauthWindowUrl) {
     this.tokenStore = tokenStore;
@@ -117,12 +120,23 @@ public abstract class Auth {
   abstract void doLogin(String authUrl, Callback<String, Throwable> callback);
 
   /**
-   * Set the oauth window URL to use to authenticate. This will be provided by
-   * default, and is essentially only provided to enable authentication in the
-   * embedded Explorer.
+   * Set the oauth window URL to use to authenticate.
    */
-  public void setOAuthWindowUrl(String url) {
+  public Auth setOAuthWindowUrl(String url) {
     this.oauthWindowUrl = url;
+    return this;
+  }
+
+  /** Sets the height of the OAuth 2.0 popup dialog, in pixels. The default is 600px. */
+  public Auth setWindowHeight(int height) {
+    this.height = height;
+    return this;
+  }
+
+  /* Sets the width of the OAuth 2.0 popup dialog, in pixels. The default is 800px. */
+  public Auth setWindowWidth(int width) {
+    this.width = width;
+    return this;
   }
 
   /**
