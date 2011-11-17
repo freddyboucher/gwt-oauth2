@@ -63,8 +63,8 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
   private static final String GOOGLE_CLIENT_ID = "452237527106.apps.googleusercontent.com";
 
   // The auth scope being requested. This scope will allow the application to
-  // read Buzz activities, comments, etc., as if it was the user.
-  private static final String BUZZ_READONLY_SCOPE = "https://www.googleapis.com/auth/buzz.readonly";
+  // identify who the authenticated user is.
+  private static final String PLUS_ME_SCOPE = "https://www.googleapis.com/auth/plus.me";
 
   // Adds a button to the page that asks for authentication from Google.
   private void addGoogleAuth() {
@@ -76,7 +76,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
       @Override
       public void onClick(ClickEvent event) {
         final AuthRequest req = new AuthRequest(GOOGLE_AUTH_URL, GOOGLE_CLIENT_ID)
-            .withScopes(BUZZ_READONLY_SCOPE);
+            .withScopes(PLUS_ME_SCOPE);
 
         // Calling login() will display a popup to the user the first time it is
         // called. Once the user has granted access to the application,
@@ -301,7 +301,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
           "authUrl" : "https://accounts.google.com/o/oauth2/auth",
           "clientId" : "452237527106.apps.googleusercontent.com",
           "scopes" : [
-            "https://www.googleapis.com/auth/buzz.readonly"
+            "https://www.googleapis.com/auth/plus.me"
           ]
         }, function(token) {
           $wnd.alert("Got an OAuth token:\n" + token + "\n"
