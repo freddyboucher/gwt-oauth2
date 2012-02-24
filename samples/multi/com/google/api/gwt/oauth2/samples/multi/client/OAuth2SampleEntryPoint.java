@@ -44,6 +44,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
     addFoursquareAuth();
     addFacebookAuth();
     addDailymotionAuth();
+    addWindowsLiveAuth();
 
     // Export the JS method that can be called in pure JS
     Auth.export();
@@ -251,7 +252,7 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
   // (http://www.dailymotion.com/profile/developer/new).
   private static final String DAILYMOTION_CLIENT_ID = "e76b8eed0083ccf9abd2";
 
-  // Adds a button to the page that asks for authentication from DAILYMOTION.
+  // Adds a button to the page that asks for authentication from DailyMotion.
   // Note that Dailymotion does not allow localhost as a redirect URL, so while
   // this code will work when hosted, it will not work when testing locally.
   private void addDailymotionAuth() {
@@ -263,6 +264,51 @@ public class OAuth2SampleEntryPoint implements EntryPoint {
       @Override
       public void onClick(ClickEvent event) {
         final AuthRequest req = new AuthRequest(DAILYMOTION_AUTH_URL, DAILYMOTION_CLIENT_ID);
+        AUTH.login(req, new Callback<String, Throwable>() {
+          @Override
+          public void onSuccess(String token) {
+            Window.alert("Got an OAuth token:\n" + token + "\n"
+                + "Token expires in " + AUTH.expiresIn(req) + " ms\n");
+          }
+
+          @Override
+          public void onFailure(Throwable caught) {
+            Window.alert("Error:\n" + caught.getMessage());
+          }
+        });
+      }
+    });
+    RootPanel.get().add(button);
+  }
+
+  // //////////////////////////////////////////////////////////////////////////
+  // AUTHENTICATING WITH WINDOWS LIVE /////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
+
+  private static final String WINDOWS_LIVE_AUTH_URL = "https://oauth.live.com/authorize";
+
+  // This app's personal client ID assigned by Windows Livea
+  // (https://manage.dev.live.com/Applications/Index).
+  private static final String WINDOWS_LIVE_CLIENT_ID = "000000004C08259A";
+
+  // This scope allows access to a user's basic info.
+  private static final String WINDOWS_LIVE_BASIC_SCOPE = "wl.basic";
+
+  // Adds a button to the page that asks for authentication from Windows Live.
+  // Note that Windows Live does not allow multiple redirect URLs, so while this
+  // code will work when hosted, it will not work when tested locally, unless
+  // you have multiple apps registered and different client IDs for testing and
+  // production.
+  private void addWindowsLiveAuth() {
+    // Since the auth flow requires opening a popup window, it must be started
+    // as a direct result of a user action, such as clicking a button or link.
+    // Otherwise, a browser's popup blocker may block the popup.
+    Button button = new Button("Authenticate with Windows Live");
+    button.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        final AuthRequest req = new AuthRequest(WINDOWS_LIVE_AUTH_URL, WINDOWS_LIVE_CLIENT_ID)
+            .withScopes(WINDOWS_LIVE_BASIC_SCOPE);
         AUTH.login(req, new Callback<String, Throwable>() {
           @Override
           public void onSuccess(String token) {
