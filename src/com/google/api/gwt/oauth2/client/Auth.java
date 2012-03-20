@@ -297,6 +297,10 @@ public abstract class Auth {
     $wnd.oauth2.expiresIn = $entry(function(req) {
       return @com.google.api.gwt.oauth2.client.Auth::nativeExpiresIn(*)(req);
     });
+
+    $wnd.oauth2.clearAllTokens = $entry(function() {
+      @com.google.api.gwt.oauth2.client.Auth::nativeClearAllTokens()();
+    });
   }-*/;
 
   private static void nativeLogin(AuthRequestJso req, JsFunction success, JsFunction failure) {
@@ -305,6 +309,10 @@ public abstract class Auth {
 
   private static double nativeExpiresIn(AuthRequestJso req) {
     return AuthImpl.INSTANCE.expiresIn(fromJso(req));
+  }
+
+  private static void nativeClearAllTokens() {
+    AuthImpl.INSTANCE.clearAllTokens();
   }
 
   private static AuthRequest fromJso(AuthRequestJso jso) {

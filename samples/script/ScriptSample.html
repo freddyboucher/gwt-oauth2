@@ -32,7 +32,13 @@
          alert("Error:\n" + error);
        });
      };
-     document.body.appendChild(button);})();
+     document.body.appendChild(button);
+
+     var clearTokens = document.createElement("button");
+     clearTokens.innerText = "Clear all tokens";
+     clearTokens.onclick = oauth2.clearAllTokens;
+     document.body.appendChild(clearTokens);
+   })();
   </script>
  </body>
 </html>
