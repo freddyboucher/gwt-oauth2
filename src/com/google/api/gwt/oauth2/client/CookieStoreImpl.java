@@ -42,7 +42,15 @@ class CookieStoreImpl extends TokenStoreImpl {
 
   @Override
   public native void clear() /*-{
-    $doc.cookie = null;
+    var allCookies = @com.google.api.gwt.oauth2.client.CookieStoreImpl::ensureCookies()();
+    var prefix = @com.google.api.gwt.oauth2.client.CookieStoreImpl::COOKIE_PREFIX;
+
+    for (var key in allCookies) {
+      if (key.indexOf(prefix) == 0) {
+        this.@com.google.api.gwt.oauth2.client.CookieStoreImpl::set(*)(
+            key.substring(prefix.length), '');
+      }
+    }
     @com.google.api.gwt.oauth2.client.CookieStoreImpl::cachedCookies = null;
   }-*/;
 
