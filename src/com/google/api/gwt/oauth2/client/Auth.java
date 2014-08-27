@@ -318,7 +318,7 @@ public abstract class Auth {
   private static AuthRequest fromJso(AuthRequestJso jso) {
     return new AuthRequest(jso.getAuthUrl(), jso.getClientId())
         .withScopes(jso.getScopes())
-        .withScopeDelimiter(jso.getScopeDelimiter());
+        .withValueDelimiter(jso.getScopeDelimiter());
   }
 
   private static final class AuthRequestJso extends JavaScriptObject {

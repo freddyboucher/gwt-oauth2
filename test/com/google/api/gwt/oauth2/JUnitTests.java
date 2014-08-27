@@ -16,6 +16,7 @@
 
 package com.google.api.gwt.oauth2;
 
+import com.google.api.gwt.oauth2.client.AuthRequestTest;
 import com.google.api.gwt.oauth2.client.AuthTest;
 
 import junit.framework.Test;
@@ -31,6 +32,7 @@ public class JUnitTests extends TestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite("JUnit tests for OAuth2 library");
     suite.addTestSuite(AuthTest.class);
+    suite.addTestSuite(AuthRequestTest.class);
     return suite;
   }
 }

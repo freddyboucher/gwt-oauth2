@@ -53,7 +53,8 @@ public class AuthTest extends TestCase {
 
     // The popup was used and the iframe wasn't.
     assertTrue(auth.loggedInViaPopup);
-    assertEquals("url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
+    assertEquals(
+        "url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
         auth.lastUrl);
   }
 
@@ -76,7 +77,8 @@ public class AuthTest extends TestCase {
     assertTrue(auth.expiringSoon(info));
 
     assertTrue(auth.loggedInViaPopup);
-    assertEquals("url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
+    assertEquals(
+        "url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
         auth.lastUrl);
   }
 
@@ -97,7 +99,8 @@ public class AuthTest extends TestCase {
     auth.login(req, callback);
 
     // A deferred command will have been scheduled. Execute it.
-    List<ScheduledCommand> deferred = ((StubScheduler) auth.scheduler).getScheduledCommands();
+    List<ScheduledCommand> deferred = ((StubScheduler) auth.scheduler)
+        .getScheduledCommands();
     assertEquals(1, deferred.size());
     deferred.get(0).execute();
 
@@ -156,7 +159,7 @@ public class AuthTest extends TestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromString(ts.store.get("clientId-----scope"));
+    TokenInfo info = TokenInfo.fromString(ts.store.get(req.asString()));
     assertEquals("foo", info.accessToken);
     assertEquals("1.0005E7", info.expires);
   }
@@ -205,7 +208,7 @@ public class AuthTest extends TestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromString(ts.store.get("clientId-----scope"));
+    TokenInfo info = TokenInfo.fromString(ts.store.get(req.asString()));
     assertEquals("foo", info.accessToken);
     assertNull(info.expires);
   }
@@ -223,19 +226,22 @@ public class AuthTest extends TestCase {
     // Simulates the auth provider's error response, with the error first, last,
     // and in the middle of the hash, and as the only element in the hash. Also
     // finds error descriptions and error URIs.
-    assertError(
-        callback, "#error=redirect_uri_mismatch", "Error from provider: redirect_uri_mismatch");
+    assertError(callback, "#error=redirect_uri_mismatch",
+        "Error from provider: redirect_uri_mismatch");
     assertError(callback, "#error=redirect_uri_mismatch&foo=bar",
         "Error from provider: redirect_uri_mismatch");
     assertError(callback, "#foo=bar&error=redirect_uri_mismatch",
         "Error from provider: redirect_uri_mismatch");
     assertError(callback, "#foo=bar&error=redirect_uri_mismatch&bar=baz",
         "Error from provider: redirect_uri_mismatch");
-    assertError(callback, "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!",
-        "Error from provider: redirect_uri_mismatch (Bad dog!)");
-    assertError(callback, "#foo=bar&error=redirect_uri_mismatch&error_uri=example.com",
-        "Error from provider: redirect_uri_mismatch; see: example.com");
     assertError(callback,
+        "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!",
+        "Error from provider: redirect_uri_mismatch (Bad dog!)");
+    assertError(callback,
+        "#foo=bar&error=redirect_uri_mismatch&error_uri=example.com",
+        "Error from provider: redirect_uri_mismatch; see: example.com");
+    assertError(
+        callback,
         "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!&error_uri=example.com",
         "Error from provider: redirect_uri_mismatch (Bad dog!); see: example.com");
 
@@ -271,8 +277,9 @@ public class AuthTest extends TestCase {
     MockClock.now += 10000; // Fast forward another 10s
     assertEquals(-1000.0, auth.expiresIn(req));
 
-    // A request that has no corresponding token expires in -1ms 
-    AuthRequest newReq = new AuthRequest("another-url", "another-clientId").withScopes("scope");
+    // A request that has no corresponding token expires in -1ms
+    AuthRequest newReq = new AuthRequest("another-url", "another-clientId")
+        .withScopes("scope");
     assertEquals(Double.NEGATIVE_INFINITY, auth.expiresIn(newReq));
   }
 
@@ -283,7 +290,8 @@ public class AuthTest extends TestCase {
     private static final TokenStore TOKEN_STORE = new InMemoryTokenStore();
 
     MockAuth() {
-      super(TOKEN_STORE, new MockClock(), new MockUrlCodex(), new StubScheduler(), "popup.html");
+      super(TOKEN_STORE, new MockClock(), new MockUrlCodex(),
+          new StubScheduler(), "popup.html");
     }
 
     @Override

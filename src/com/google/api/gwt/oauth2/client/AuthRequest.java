@@ -16,6 +16,10 @@
 
 package com.google.api.gwt.oauth2.client;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * Represents a request for authentication to an OAuth 2.0 provider server.
  *
@@ -24,8 +28,8 @@ package com.google.api.gwt.oauth2.client;
 public class AuthRequest {
   private final String authUrl;
   private final String clientId;
-  private String[] scopes;
-  private String scopeDelimiter = " ";
+  private Map<String, String[]> parameters;
+  private String valueDelimiter = " ";
 
   /**
    * @param authUrl URL of the OAuth 2.0 provider server
@@ -38,22 +42,39 @@ public class AuthRequest {
 
   /** Set some OAuth 2.0 scopes to request access to. */
   public AuthRequest withScopes(String... scopes) {
-    this.scopes = scopes;
-    return this;
+    return withParameter("scope", scopes);
   }
 
   /**
-   * Since some OAuth providers expect multiple scopes to be delimited with
-   * spaces (conforming with spec), or spaces, or plus signs, you can set the
-   * scope delimiter here that will be used for this AuthRequest.
-   *
+   * Use {@link #withValueDelimiter(String)}
+   */
+  @Deprecated
+  public AuthRequest withScopeDelimiter(String scopeDelimiter) {
+    return withValueDelimiter(scopeDelimiter);
+  }
+
+  /**
+   * Since some OAuth providers expect multiple parameter values (like scopes)
+   * to be delimited with spaces (conforming with spec), or spaces, or plus
+   * signs, you can set the value delimiter here that will be used for this
+   * AuthRequest.
+   * 
    * <p>
    * By default, this will be a single space, in conformance with the latest
    * draft of the OAuth 2.0 spec.
    * </p>
    */
-  public AuthRequest withScopeDelimiter(String scopeDelimiter) {
-    this.scopeDelimiter = scopeDelimiter;
+  public AuthRequest withValueDelimiter(String valueDelimiter) {
+    this.valueDelimiter = valueDelimiter;
+    return this;
+  }
+
+  /** Set some OAuth 2.0 parameter to request access to. */
+  public AuthRequest withParameter(String key, String... values) {
+    if (parameters == null) {
+      parameters = new HashMap<String, String[]>();
+    }
+    parameters.put(key, values);
     return this;
   }
 
@@ -62,49 +83,87 @@ public class AuthRequest {
    * scopes to the original authUrl.
    */
   String toUrl(Auth.UrlCodex urlCodex) {
-    return new StringBuilder(authUrl)
-        .append(authUrl.contains("?") ? "&" : "?")
+    return new StringBuilder(authUrl).append(authUrl.contains("?") ? "&" : "?")
         .append("client_id").append("=").append(urlCodex.encode(clientId))
         .append("&").append("response_type").append("=").append("token")
-        .append("&").append("scope").append("=").append(scopesToString(urlCodex))
-        .toString();
+        .append(parametersToString(urlCodex)).toString();
   }
 
   /** Returns a unique representation of this request for use as a cookie name. */
   String asString() {
     // Don't need to URL-encode the scopes since they're just stored here.
-    return clientId + "-----" + scopesToString(null);
+    return clientId + "-----" + parametersToString(null);
   }
 
   /**
-   * Returns a comma-delimited list of scopes.
-   *
-   * <p>These scopes will be URL-encoded if the given codex is not null.</p>
+   * Returns a comma-delimited list of values.
+   * 
+   * <p>
+   * These values will be URL-encoded if the given codex is not null.
+   * </p>
    */
-  private String scopesToString(Auth.UrlCodex urlCodex) {
-    if (scopes == null || scopes.length == 0) {
+  private String valuesToString(Auth.UrlCodex urlCodex, String[] values) {
+    if (values == null || values.length == 0) {
       return "";
     }
     StringBuilder sb = new StringBuilder();
     boolean needsSeparator = false;
-    for (String scope : scopes) {
+    for (String value : values) {
       if (needsSeparator) {
-        sb.append(scopeDelimiter);
+        sb.append(valueDelimiter);
       }
       needsSeparator = true;
 
       // Use the URL codex to encode each scope, if provided.
-      sb.append(urlCodex == null ? scope : urlCodex.encode(scope));
+      sb.append(urlCodex == null ? value : urlCodex.encode(value));
     }
     return sb.toString();
+  }
+
+  private String parametersToString(Auth.UrlCodex urlCodex) {
+    if (parameters == null || parameters.size() == 0) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, String[]> parameter : parameters.entrySet()) {
+      sb.append("&");
+      sb.append(parameter.getKey());
+      sb.append("=");
+      sb.append(valuesToString(urlCodex, parameter.getValue()));
+    }
+    return sb.toString();
+  }
+
+  public String getValueDelimiter() {
+    return valueDelimiter;
   }
 
   /** Returns an {@link AuthRequest} represented by the string serialization. */
   static AuthRequest fromString(String str) {
     String[] parts = str.split("-----");
     String clientId = parts[0];
-    String[] scopes = parts.length == 2 ? parts[1].split(",") : new String[0];
-    AuthRequest req = new AuthRequest("", clientId).withScopes(scopes);
+    AuthRequest req = new AuthRequest("", clientId);
+    if (parts.length == 2) {
+      String[] parameters = parts[1].split("&");
+      for (int i = 0; i < parameters.length; i++) {
+        if (!parameters[i].isEmpty()) {
+          String[] parameter = parameters[i].split("=");
+          if (parameter.length > 0) {
+            String key = parameter[0];
+            if (parameter.length == 2) {
+              if (parameter[1].contains(",")) {
+                req.withValueDelimiter(",");
+              } else if (parameter[1].contains("+")) {
+                req.withValueDelimiter("+");
+              }
+            }
+            String[] values = parameter.length == 2 ? parameter[1].split(req
+                .getValueDelimiter()) : new String[0];
+            req.withParameter(key, values);
+          }
+        }
+      }
+    }
     return req;
   }
 }
