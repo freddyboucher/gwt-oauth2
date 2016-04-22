@@ -137,6 +137,9 @@ public class AuthTest extends TestCase {
    * in the correct amount of time.
    */
   public void testFinish() {
+    // Reset the default value
+    MockClock.now = 5000;
+
     AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
     MockCallback callback = new MockCallback();
     auth.login(req, callback);
