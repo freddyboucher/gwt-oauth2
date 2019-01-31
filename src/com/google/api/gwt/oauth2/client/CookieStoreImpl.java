@@ -19,12 +19,12 @@ package com.google.api.gwt.oauth2.client;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Backup implementation of TokenStoreImpl storing tokens in cookies, for
+ * Backup implementation of TokenStore storing tokens in cookies, for
  * browsers where localStorage is not supported.
  * 
  * @author jasonhall@google.com (Jason Hall)
  */
-class CookieStoreImpl extends TokenStoreImpl {
+class CookieStoreImpl implements TokenStore {
   private static final String COOKIE_PREFIX = "gwt-oauth2-";
 
   @Override

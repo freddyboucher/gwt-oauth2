@@ -48,7 +48,7 @@ class AuthImpl extends Auth {
   // TODO(jasonhall): This will not result in CookieStoreImpl being compiled out
   // for browsers that support localStorage, and vice versa? If not, this should
   // be a deferred binding rule.
-  private static TokenStoreImpl getTokenStore() {
+  private static TokenStore getTokenStore() {
     return Storage.isLocalStorageSupported() ? new TokenStoreImpl() : new CookieStoreImpl();
   }
 
