@@ -27,7 +27,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 class CookieStoreImpl extends TokenStoreImpl {
   private static final String COOKIE_PREFIX = "gwt-oauth2-";
 
-  @SuppressWarnings("deprecation")
   @Override
   public native void set(String key, String value) /*-{
     $doc.cookie = @com.google.api.gwt.oauth2.client.CookieStoreImpl::COOKIE_PREFIX +
@@ -46,7 +45,7 @@ class CookieStoreImpl extends TokenStoreImpl {
     var prefix = @com.google.api.gwt.oauth2.client.CookieStoreImpl::COOKIE_PREFIX;
 
     for (var key in allCookies) {
-      if (key.indexOf(prefix) == 0) {
+      if (key.indexOf(prefix) === 0) {
         this.@com.google.api.gwt.oauth2.client.CookieStoreImpl::set(*)(
             key.substring(prefix.length), '');
       }
@@ -62,12 +61,12 @@ class CookieStoreImpl extends TokenStoreImpl {
   private static native void loadCookies() /*-{
     @com.google.api.gwt.oauth2.client.CookieStoreImpl::cachedCookies = {};
     var docCookie = $doc.cookie;
-    if (docCookie && docCookie != '') {
+    if (docCookie && docCookie !== '') {
       var crumbs = docCookie.split('; ');
       for ( var i = 0; i < crumbs.length; ++i) {
         var name, value;
         var eqIdx = crumbs[i].indexOf('=');
-        if (eqIdx == -1) {
+        if (eqIdx === -1) {
           name = crumbs[i];
           value = '';
         } else {
@@ -99,7 +98,7 @@ class CookieStoreImpl extends TokenStoreImpl {
   private static native boolean needsRefresh() /*-{
     var docCookie = $doc.cookie;
     // Check to see if cached cookies need to be invalidated.
-    if (docCookie != @com.google.gwt.user.client.Cookies::rawCookies) {
+    if (docCookie !== @com.google.gwt.user.client.Cookies::rawCookies) {
       @com.google.gwt.user.client.Cookies::rawCookies = docCookie;
       return true;
     } else {

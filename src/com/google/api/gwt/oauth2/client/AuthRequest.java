@@ -121,7 +121,7 @@ public class AuthRequest {
   }
 
   private String parametersToString(Auth.UrlCodex urlCodex) {
-    if (parameters == null || parameters.size() == 0) {
+    if (parameters == null || parameters.isEmpty()) {
       return "";
     }
     StringBuilder sb = new StringBuilder();
@@ -145,20 +145,19 @@ public class AuthRequest {
     AuthRequest req = new AuthRequest("", clientId);
     if (parts.length == 2) {
       String[] parameters = parts[1].split("&");
-      for (int i = 0; i < parameters.length; i++) {
-        if (!parameters[i].isEmpty()) {
-          String[] parameter = parameters[i].split("=");
-          if (parameter.length > 0) {
-            String key = parameter[0];
-            if (parameter.length == 2) {
-              if (parameter[1].contains(",")) {
+      for (String parameter : parameters) {
+        if (!parameter.isEmpty()) {
+          String[] splitParameter = parameter.split("=");
+          if (splitParameter.length > 0) {
+            String key = splitParameter[0];
+            if (splitParameter.length == 2) {
+              if (splitParameter[1].contains(",")) {
                 req.withValueDelimiter(",");
-              } else if (parameter[1].contains("+")) {
+              } else if (splitParameter[1].contains("+")) {
                 req.withValueDelimiter("+");
               }
             }
-            String[] values = parameter.length == 2 ? parameter[1].split(req
-                .getValueDelimiter()) : new String[0];
+            String[] values = splitParameter.length == 2 ? splitParameter[1].split(req.getValueDelimiter()) : new String[0];
             req.withParameter(key, values);
           }
         }

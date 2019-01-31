@@ -123,7 +123,7 @@ public abstract class Auth {
    * Set the oauth window URL to use to authenticate.
    */
   public Auth setOAuthWindowUrl(String url) {
-    this.oauthWindowUrl = url;
+    oauthWindowUrl = url;
     return this;
   }
 
@@ -176,7 +176,7 @@ public abstract class Auth {
         info.accessToken = val;
       } else if (key.equals("expires_in")) {
         // expires_in is seconds, convert to milliseconds and add to now
-        Double expiresIn = Double.valueOf(val) * 1000;
+        double expiresIn = Double.valueOf(val) * 1000;
         info.expires = String.valueOf(clock.now() + expiresIn);
       } else if (key.equals("error")) {
         error = val;
@@ -199,13 +199,13 @@ public abstract class Auth {
   }
 
   /** Test-compatible abstraction for getting the current time. */
-  static interface Clock {
+  interface Clock {
     // Using double to avoid longs in GWT, which are slow.
     double now();
   }
 
   /** Test-compatible URL encoder/decoder. */
-  static interface UrlCodex {
+  interface UrlCodex {
     /**
      * URL-encode a string. This is abstract so that the Auth class can be
      * tested.

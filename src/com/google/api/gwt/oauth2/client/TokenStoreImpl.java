@@ -25,21 +25,24 @@ package com.google.api.gwt.oauth2.client;
 class TokenStoreImpl implements TokenStore {
   private static final String KEY = "gwt-oauth2";
 
+  @Override
   public native void set(String key, String value) /*-{
     var obj = JSON.parse($wnd.localStorage.getItem(
-        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}');
+      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}');
     obj[key] = value;
     $wnd.localStorage.setItem(
-        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY, JSON.stringify(obj));
+      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY, JSON.stringify(obj));
   }-*/;
 
+  @Override
   public native String get(String key) /*-{
     return JSON.parse($wnd.localStorage.getItem(
-        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || '';
+      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || '';
   }-*/;
 
+  @Override
   public native void clear() /*-{
     $wnd.localStorage.removeItem(
-        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY);
+      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY);
   }-*/;
 }

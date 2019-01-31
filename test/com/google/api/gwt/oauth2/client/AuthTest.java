@@ -16,16 +16,16 @@
 
 package com.google.api.gwt.oauth2.client;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.api.gwt.oauth2.client.Auth.TokenInfo;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.testing.StubScheduler;
 
 import junit.framework.TestCase;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests for {@link Auth}.
@@ -179,8 +179,7 @@ public class AuthTest extends TestCase {
     // onFailure() was called with a RuntimeException stating the error.
     assertNotNull(callback.failure);
     assertTrue(callback.failure instanceof RuntimeException);
-    assertEquals("Could not find access_token in hash #foobarbaznonsense",
-        ((RuntimeException) callback.failure).getMessage());
+    assertEquals("Could not find access_token in hash #foobarbaznonsense", callback.failure.getMessage());
 
     // onSuccess() was not called.
     assertNull(callback.token);
@@ -258,7 +257,7 @@ public class AuthTest extends TestCase {
     // onFailure() was called with a RuntimeException stating the error.
     assertNotNull(callback.failure);
     assertTrue(callback.failure instanceof RuntimeException);
-    assertEquals(error, ((RuntimeException) callback.failure).getMessage());
+    assertEquals(error, callback.failure.getMessage());
 
     // onSuccess() was not called.
     assertNull(callback.token);
@@ -352,7 +351,7 @@ public class AuthTest extends TestCase {
 
     @Override
     public void onFailure(Throwable caught) {
-      this.failure = caught;
+      failure = caught;
     }
   }
 }

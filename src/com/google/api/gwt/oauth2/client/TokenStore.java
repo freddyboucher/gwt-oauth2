@@ -22,9 +22,9 @@ package com.google.api.gwt.oauth2.client;
  * @author jasonhall@google.com (Jason Hall)
  */
 interface TokenStore {
-  public void set(String key, String value);
+  void set(String key, String value);
 
-  public String get(String key);
+  String get(String key);
 
-  public void clear();
+  void clear();
 }
