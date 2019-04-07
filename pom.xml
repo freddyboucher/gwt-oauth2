@@ -32,13 +32,10 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test</testSourceDirectory>
-
-    <!-- We have to include 'src' dir content (included *.java source files) in the generated jar for GWT compilation purpose -->
+    <!-- We have to include 'src/main/java' dir content (included *.java source files) in the generated jar for GWT compilation purpose -->
     <resources>
       <resource>
-        <directory>src</directory>
+        <directory>src/main/java</directory>
       </resource>
     </resources>
   </build>
