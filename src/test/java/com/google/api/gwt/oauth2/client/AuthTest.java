@@ -263,25 +263,6 @@ public class AuthTest extends TestCase {
     assertNull(callback.token);
   }
 
-  public void testExpiresInfo() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
-    auth.login(req, new MockCallback());
-
-    // Simulates the auth provider's response (expires in 10s)
-    auth.finish("#access_token=foo&expires_in=10");
-
-    MockClock.now += 1000; // Fast forward 1s
-    assertEquals(9000.0, auth.expiresIn(req));
-
-    MockClock.now += 10000; // Fast forward another 10s
-    assertEquals(-1000.0, auth.expiresIn(req));
-
-    // A request that has no corresponding token expires in -1ms
-    AuthRequest newReq = new AuthRequest("another-url", "another-clientId")
-        .withScopes("scope");
-    assertEquals(Double.NEGATIVE_INFINITY, auth.expiresIn(newReq));
-  }
-
   private static class MockAuth extends Auth {
     private boolean loggedInViaPopup;
     private String lastUrl;
