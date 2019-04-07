@@ -9,34 +9,24 @@ public class AuthRequestTest extends GWTTestCase {
     return "com.google.api.gwt.oauth2.OAuth2";
   }
 
-  public void testAsString() {
-    AuthRequest req1 = new AuthRequest("url", "clientId").withScopes("scope");
-    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}", req1.asJson());
+  public void testBuildString() {
+    AuthRequest req1 = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope", req1.buildString());
 
-    AuthRequest req2 = new AuthRequest("url", "clientId").withParameter("scope", "scope");
-    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}", req2.asJson());
+    AuthRequest req2 = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope", req2.buildString());
 
-    AuthRequest req3 = new AuthRequest("url", "clientId").withScopes("scope").withParameter("key", "value");
-    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"], \"key\":[\"value\"]}, \"value_delimiter\":\" \"}", req3.asJson());
+    AuthRequest req3 =
+        new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("key", "value").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope&key=value", req3.buildString());
 
-    AuthRequest req4 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2");
-    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\" \"}", req4.asJson());
+    AuthRequest req4 = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope1 scope2").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope1+scope2", req4.buildString());
 
-    AuthRequest req5 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2").withValueDelimiter(",");
-    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\",\"}", req5.asJson());
-  }
+    AuthRequest req5 = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope1,scope2").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope1%2Cscope2", req5.buildString());
 
-  public void testFromString() {
-    String string1 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}";
-    assertEquals(string1, AuthRequest.fromJson(string1).asJson());
-
-    String string2 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"], \"key\":[\"value\"]}, \"value_delimiter\":\" \"}";
-    assertEquals(string2, AuthRequest.fromJson(string2).asJson());
-
-    String string3 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\",\"}";
-    assertEquals(string3, AuthRequest.fromJson(string3).asJson());
-
-    String string4 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\" \"}";
-    assertEquals(string4, AuthRequest.fromJson(string4).asJson());
+    AuthRequest req6 = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope1", "scope2").setParameter("redirect_uri", "uri");
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope1&scope=scope2", req6.buildString());
   }
 }

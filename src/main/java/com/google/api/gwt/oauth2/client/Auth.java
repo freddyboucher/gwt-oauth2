@@ -19,11 +19,15 @@ package com.google.api.gwt.oauth2.client;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides methods to manage authentication flow.
@@ -39,24 +43,20 @@ public abstract class Auth {
 
   final TokenStore tokenStore;
   private final Clock clock;
-  private final UrlCodex urlCodex;
   final Scheduler scheduler;
-  String oauthWindowUrl;
 
   int height = 600;
   int width = 800;
 
-  Auth(TokenStore tokenStore, Clock clock, UrlCodex urlCodex, Scheduler scheduler,
-      String oauthWindowUrl) {
+  Auth(TokenStore tokenStore, Clock clock, Scheduler scheduler) {
     this.tokenStore = tokenStore;
     this.clock = clock;
-    this.urlCodex = urlCodex;
     this.scheduler = scheduler;
-    this.oauthWindowUrl = oauthWindowUrl;
   }
 
   private AuthRequest lastRequest;
-  private Callback<String, Throwable> lastCallback;
+  private List<String> lastRequiredParams;
+  private Callback<Map<String, String>, Throwable> lastCallback;
 
   private static final double TEN_MINUTES = 10 * 60 * 1000;
 
@@ -76,15 +76,17 @@ public abstract class Auth {
    * hasn't been granted, the user will be prompted, and when they grant, the
    * token will be passed to the callback.
    * </p>
-   *
-   * @param req Request for authentication.
+   *  @param req Request for authentication.
    * @param callback Callback to pass the token to when access has been granted.
+   * @param requiredParams
    */
-  public void login(AuthRequest req, final Callback<String, Throwable> callback) {
+  public void login(AuthRequest req, final Callback<Map<String, String>, Throwable> callback,
+                    String... requiredParams) {
     lastRequest = req;
     lastCallback = callback;
+    lastRequiredParams = Arrays.asList(requiredParams);
 
-    String authUrl = req.toUrl(urlCodex) + "&redirect_uri=" + urlCodex.encode(oauthWindowUrl);
+    String authUrl = req.buildString();
 
     // Try to look up the token we have stored.
     final TokenInfo info = getToken(req);
@@ -99,9 +101,19 @@ public abstract class Auth {
       scheduler.scheduleDeferred(new ScheduledCommand() {
         @Override
         public void execute() {
-          callback.onSuccess(info.accessToken);
+          answerCallback(info);
         }
       });
+    }
+  }
+
+  private void answerCallback(TokenInfo info) {
+    if (info.params.keySet().containsAll(lastRequiredParams)) {
+      lastCallback.onSuccess(info.params);
+    } else {
+      lastCallback
+          .onFailure(new RuntimeException("Could not find required params: " + lastRequiredParams.toString() +
+              " in response: " + info.params.toString()));
     }
   }
 
@@ -120,15 +132,7 @@ public abstract class Auth {
    * Get the OAuth 2.0 token for which this application may not have already
    * been granted access, by displaying a popup to the user.
    */
-  abstract void doLogin(String authUrl, Callback<String, Throwable> callback);
-
-  /**
-   * Set the oauth window URL to use to authenticate.
-   */
-  public Auth setOAuthWindowUrl(String url) {
-    oauthWindowUrl = url;
-    return this;
-  }
+  abstract void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback);
 
   /** Sets the height of the OAuth 2.0 popup dialog, in pixels. The default is 600px. */
   public Auth setWindowHeight(int height) {
@@ -149,55 +153,56 @@ public abstract class Auth {
   // This method is called via a global method defined in AuthImpl.register()
   @SuppressWarnings("unused")
   void finish(String hash) {
-    TokenInfo info = new TokenInfo();
-    String error = null;
-    String errorDesc = "";
-    String errorUri = "";
-
-    // Iterate over keys and values in the string hash value to find relevant
-    // information like the access token or an error message. The string will be
-    // in the form of: #key1=val1&key2=val2&key3=val3 (etc.)
-    int idx = 1;
-    while (idx < hash.length() - 1) {
-      // Grab the next key (between start and '=')
-      int nextEq = hash.indexOf('=', idx);
-      if (nextEq < 0) {
-        break;
-      }
-      String key = hash.substring(idx, nextEq);
-
-      // Grab the next value (between '=' and '&')
-      int nextAmp = hash.indexOf('&', nextEq);
-      nextAmp = nextAmp < 0 ? hash.length() : nextAmp;
-      String val = hash.substring(nextEq + 1, nextAmp);
-
-      // Start looking from here from now on.
-      idx = nextAmp + 1;
-
-      // Store relevant values to be used later.
-      if (key.equals("access_token")) {
-        info.accessToken = val;
-      } else if (key.equals("expires_in")) {
-        // expires_in is seconds, convert to milliseconds and add to now
-        double expiresIn = Double.valueOf(val) * 1000;
-        info.expires = clock.now() + expiresIn;
-      } else if (key.equals("error")) {
-        error = val;
-      } else if (key.equals("error_description")) {
-        errorDesc = " (" + val + ")";
-      } else if (key.equals("error_uri")) {
-        errorUri = "; see: " + val;
-      }
-    }
-
-    if (error != null) {
-      lastCallback.onFailure(
-          new RuntimeException("Error from provider: " + error + errorDesc + errorUri));
-    } else if (info.accessToken == null) {
-      lastCallback.onFailure(new RuntimeException("Could not find access_token in hash " + hash));
+    if (!hash.startsWith("#")) {
+      lastCallback.onFailure(new RuntimeException("Invalid hash: " + hash));
     } else {
-      setToken(lastRequest, info);
-      lastCallback.onSuccess(info.accessToken);
+      Map<String, String> params = new HashMap<String, String>();
+
+      // Iterate over keys and values in the string hash value to find relevant
+      // information like the access token or an error message. The string will be
+      // in the form of: #key1=val1&key2=val2&key3=val3 (etc.)
+      int idx = 1;
+      while (idx < hash.length() - 1) {
+        // Grab the next key (between start and '=')
+        int nextEq = hash.indexOf('=', idx);
+        if (nextEq < 0) {
+          break;
+        }
+        String key = hash.substring(idx, nextEq);
+
+        // Grab the next value (between '=' and '&')
+        int nextAmp = hash.indexOf('&', nextEq);
+        nextAmp = nextAmp < 0 ? hash.length() : nextAmp;
+        String val = hash.substring(nextEq + 1, nextAmp);
+
+        // Start looking from here from now on.
+        idx = nextAmp + 1;
+
+        params.put(key, val);
+      }
+
+      if (params.containsKey("error")) {
+        StringBuilder builder = new StringBuilder("Error from provider: ").append(params.get("error"));
+        if (params.containsKey("error_description")) {
+          builder.append(" (").append(params.get("error_description")).append(")");
+        }
+        if (params.containsKey("error_uri")) {
+          builder.append("; see: ").append(params.get("error_uri"));
+        }
+        lastCallback.onFailure(new RuntimeException(builder.toString()));
+      } else {
+        Double expires;
+        if (params.containsKey("expires_in")) {
+          // expires_in is seconds, convert to milliseconds and add to now
+          double expiresIn = Double.valueOf(params.get("expires_in")) * 1000;
+          expires = clock.now() + expiresIn;
+        } else {
+          expires = null;
+        }
+        TokenInfo info = new TokenInfo(expires, params);
+        setToken(lastRequest, info);
+        answerCallback(info);
+      }
     }
   }
 
@@ -207,28 +212,20 @@ public abstract class Auth {
     double now();
   }
 
-  /** Test-compatible URL encoder/decoder. */
-  interface UrlCodex {
-    /**
-     * URL-encode a string. This is abstract so that the Auth class can be
-     * tested.
-     */
-    String encode(String url);
-
-    /**
-     * URL-decode a string. This is abstract so that the Auth class can be
-     * tested.
-     */
-    String decode(String url);
-  }
-
   TokenInfo getToken(AuthRequest req) {
-    String tokenStr = tokenStore.get(req.asJson());
-    return tokenStr != null ? TokenInfo.fromJson(tokenStr) : null;
+    String tokenStr = tokenStore.get(req.buildString());
+    if (tokenStr != null) {
+      try {
+        return TokenInfo.fromJson(tokenStr);
+      } catch (Exception e) {
+        tokenStore.clear();
+      }
+    }
+    return null;
   }
 
   void setToken(AuthRequest req, TokenInfo info) {
-    tokenStore.set(req.asJson(), info.asJson());
+    tokenStore.set(req.buildString(), info.asJson());
   }
 
   /**
@@ -236,7 +233,7 @@ public abstract class Auth {
    *
    * <p>
    * This will result in subsequent calls to
-   * {@link #login(AuthRequest, Callback)} displaying a popup to the user. If
+   * {@link #login(AuthRequest, Callback, String...)} displaying a popup to the user. If
    * the user has already granted access, that popup will immediately close.
    * </p>
    */
@@ -247,19 +244,42 @@ public abstract class Auth {
   /**
    * Encapsulates information an access token and when it will expire.
    */
-  @JsType(namespace = JsPackage.GLOBAL, isNative = true, name = "Object")
   static final class TokenInfo {
-    @JsProperty(name = "access_token") String accessToken;
-    Double expires;
+    final Map<String, String> params;
+    final Double expires;
 
-    @JsOverlay
-    public String asJson() {
-      return JSON.stringify(this);
+    public TokenInfo(Double expires, Map<String, String> params) {
+      this.expires = expires;
+      this.params = params;
     }
 
-    @JsOverlay
+    public String asJson() {
+      JSONObject root = new JSONObject();
+      if (expires != null) {
+        root.put("expires", new JSONNumber(expires));
+      }
+      JSONObject paramsJsonObject = new JSONObject();
+      for (Map.Entry<String, String> entry : params.entrySet()) {
+        paramsJsonObject.put(entry.getKey(), new JSONString(entry.getValue()));
+      }
+      root.put("params", paramsJsonObject);
+      return root.toString();
+    }
+
     public static TokenInfo fromJson(String val) {
-      return (TokenInfo) JSON.parse(val);
+      Map<String, String> response = new HashMap<String, String>();
+      JSONObject root = JSONParser.parseStrict(val).isObject();
+      Double expires;
+      if (root.containsKey("expires")) {
+        expires = root.get("expires").isNumber().doubleValue();
+      } else {
+        expires = null;
+      }
+      JSONObject responseJsonObject = root.get("params").isObject();
+      for (String key : responseJsonObject.keySet()) {
+        response.put(key, responseJsonObject.get(key).isString().stringValue());
+      }
+      return new TokenInfo(expires, response);
     }
   }
 }

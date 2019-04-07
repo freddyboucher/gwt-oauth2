@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,16 +16,17 @@
 
 package com.google.api.gwt.oauth2.client;
 
+import java.util.Map;
+
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.storage.client.Storage;
 
 /**
  * Real implementation of {@link Auth}, used in real GWT applications.
- * 
+ *
  * @author jasonhall@google.com (Jason Hall)
  */
 class AuthImpl extends Auth {
@@ -35,9 +36,7 @@ class AuthImpl extends Auth {
   private Window window;
 
   AuthImpl() {
-    super(getTokenStore(), new RealClock(), new RealUrlCodex(), Scheduler.get(),
-    // Default to use the bundled oauthWindow.html
-        GWT.getModuleBaseURL() + "oauthWindow.html");
+    super(getTokenStore(), new RealClock(), Scheduler.get());
     register();
   }
 
@@ -70,7 +69,7 @@ class AuthImpl extends Auth {
    * been granted access, by displaying a popup to the user.
    */
   @Override
-  void doLogin(String authUrl, Callback<String, Throwable> callback) {
+  void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback) {
     if (window != null && window.isOpen()) {
       callback.onFailure(new IllegalStateException("Authentication in progress"));
     } else {
@@ -117,21 +116,5 @@ class AuthImpl extends Auth {
     public double now() {
       return Duration.currentTimeMillis();
     }
-  }
-
-  /** Real GWT implementation of UrlCodex. */
-  private static class RealUrlCodex implements UrlCodex {
-    @Override
-    public native String encode(String url) /*-{
-      var regexp = /%20/g;
-      return encodeURIComponent(url).replace(regexp, "+");
-    }-*/;
-
-    @Override
-    public native String decode(String url) /*-{
-      var regexp = /\+/g;
-      return decodeURIComponent(url.replace(regexp, "%20"));
-    }-*/;
-
   }
 }

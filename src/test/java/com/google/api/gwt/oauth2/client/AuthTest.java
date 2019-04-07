@@ -16,15 +16,15 @@
 
 package com.google.api.gwt.oauth2.client;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.api.gwt.oauth2.client.Auth.TokenInfo;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.testing.StubScheduler;
 import com.google.gwt.junit.client.GWTTestCase;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link Auth}.
@@ -51,15 +51,13 @@ public class AuthTest extends GWTTestCase {
    * token.
    */
   public void testLogin_noToken() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("redirect_uri", "uri");
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // The popup was used and the iframe wasn't.
     assertTrue(auth.loggedInViaPopup);
-    assertEquals(
-        "url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
-        auth.lastUrl);
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope", auth.lastUrl);
   }
 
   /**
@@ -67,23 +65,19 @@ public class AuthTest extends GWTTestCase {
    * used to refresh the token.
    */
   public void testLogin_expiringSoon() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("redirect_uri", "uri");
 
     // Storing a token that expires soon (in just under 10 minutes)
-    TokenInfo info = new TokenInfo();
-    info.accessToken = "expired";
-    info.expires = MockClock.now + 10 * 60 * 1000 - 1;
+    TokenInfo info = new TokenInfo(MockClock.now + 10 * 60 * 1000 - 1, new HashMap<String, String>());
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     assertTrue(auth.expiringSoon(info));
 
     assertTrue(auth.loggedInViaPopup);
-    assertEquals(
-        "url?client_id=clientId&response_type=token&scope=scope&redirect_uri=popup.html",
-        auth.lastUrl);
+    assertEquals("http://host/path?client_id=clientId&response_type=token&redirect_uri=uri&scope=scope", auth.lastUrl);
   }
 
   /**
@@ -91,16 +85,16 @@ public class AuthTest extends GWTTestCase {
    * nor iframe is used, and the token is immediately passed to the callback.
    */
   public void testLogin_notExpiringSoon() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
 
     // Storing a token that does not expire soon (in exactly 10 minutes)
-    TokenInfo info = new TokenInfo();
-    info.accessToken = "notExpiringSoon";
-    info.expires = MockClock.now + 10 * 60 * 1000;
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put("access_token", "foo");
+    TokenInfo info = new TokenInfo(MockClock.now + 10 * 60 * 1000, params);
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // A deferred command will have been scheduled. Execute it.
     List<ScheduledCommand> deferred = ((StubScheduler) auth.scheduler)
@@ -112,7 +106,7 @@ public class AuthTest extends GWTTestCase {
     assertFalse(auth.loggedInViaPopup);
 
     // onSuccess() was called and onFailure() wasn't.
-    assertEquals("notExpiringSoon", callback.token);
+    assertEquals(params, callback.params);
     assertNull(callback.failure);
   }
 
@@ -121,16 +115,14 @@ public class AuthTest extends GWTTestCase {
    * iframe will be used to refresh the token without displaying the popup.
    */
   public void testLogin_nullExpires() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
 
     // Storing a token with a null expires time
-    TokenInfo info = new TokenInfo();
-    info.accessToken = "longToken";
-    info.expires = null;
+    TokenInfo info = new TokenInfo(null, new HashMap<String, String>());
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // TODO(jasonhall): When Auth supports immediate mode for supporting
     // providers, a null expiration will trigger an iframe immediate-mode
@@ -147,15 +139,15 @@ public class AuthTest extends GWTTestCase {
     // Reset the default value
     MockClock.now = 5000;
 
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // Simulates the auth provider's response
     auth.finish("#access_token=foo&expires_in=10000");
 
     // onSuccess() was called and onFailure() wasn't
-    assertEquals("foo", callback.token);
+    assertEquals("{access_token=foo, expires_in=10000}", callback.params.toString());
     assertNull(callback.failure);
 
     // A token was stored as a result
@@ -163,19 +155,52 @@ public class AuthTest extends GWTTestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.asJson()));
-    assertEquals("foo", info.accessToken);
+    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.buildString()));
+    assertEquals("{access_token=foo, expires_in=10000}", info.params.toString());
     assertEquals(10005000D, info.expires);
   }
 
+  public void testFinishDifferentResponseType() {
+    // Reset the default value
+    MockClock.now = 5000;
+
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope").setParameter("response_type", "id_token");
+    MockCallback callback = new MockCallback();
+    auth.login(req, callback, "id_token");
+
+    // Simulates the auth provider's response
+    auth.finish("#id_token=foo&expires_in=10000");
+
+    // onSuccess() was called and onFailure() wasn't
+    assertEquals("{id_token=foo, expires_in=10000}", callback.params.toString());
+    assertNull(callback.failure);
+  }
+
   /**
-   * If finish() is passed a bad hash from the auth provider, a RuntimeException
+   * If finish() is passed an invalid hash from the auth provider, a RuntimeException
    * will be passed to the callback.
    */
-  public void testFinish_badHash() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+  public void testFinish_invalidHash() {
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
+
+    // Simulates the auth provider's response
+    auth.finish("foobarbaznonsense");
+
+    // onFailure() was called with a RuntimeException stating the error.
+    assertNotNull(callback.failure);
+    assertTrue(callback.failure instanceof RuntimeException);
+    assertEquals("Invalid hash: foobarbaznonsense", callback.failure.getMessage());
+
+    // onSuccess() was not called.
+    assertNull(callback.params);
+  }
+
+  public void testFinish_badHash() {
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
+    MockCallback callback = new MockCallback();
+    auth.login(req, callback, "access_token");
 
     // Simulates the auth provider's response
     auth.finish("#foobarbaznonsense");
@@ -183,10 +208,23 @@ public class AuthTest extends GWTTestCase {
     // onFailure() was called with a RuntimeException stating the error.
     assertNotNull(callback.failure);
     assertTrue(callback.failure instanceof RuntimeException);
-    assertEquals("Could not find access_token in hash #foobarbaznonsense", callback.failure.getMessage());
+    assertEquals("Could not find required params: [access_token] in response: {}", callback.failure.getMessage());
 
     // onSuccess() was not called.
-    assertNull(callback.token);
+    assertNull(callback.params);
+  }
+
+  public void testFinish_noRequiredParams() {
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
+    MockCallback callback = new MockCallback();
+    auth.login(req, callback);
+
+    // Simulates the auth provider's response
+    auth.finish("#access_token=foo");
+
+    // onSuccess() was called and onFailure() wasn't
+    assertEquals("{access_token=foo}", callback.params.toString());
+    assertNull(callback.failure);
   }
 
   /**
@@ -195,15 +233,15 @@ public class AuthTest extends GWTTestCase {
    * iframe will be used, see {@link #testLogin_nullExpires()}.
    */
   public void testFinish_noExpires() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // Simulates the auth provider's response
     auth.finish("#access_token=foo");
 
     // onSuccess() was called and onFailure() wasn't
-    assertEquals("foo", callback.token);
+    assertEquals("{access_token=foo}", callback.params.toString());
     assertNull(callback.failure);
 
     // A token was stored as a result
@@ -211,8 +249,8 @@ public class AuthTest extends GWTTestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.asJson()));
-    assertEquals("foo", info.accessToken);
+    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.buildString()));
+    assertEquals("{access_token=foo}", info.params.toString());
     assertNull(info.expires);
   }
 
@@ -222,9 +260,9 @@ public class AuthTest extends GWTTestCase {
    * string.
    */
   public void testFinish_error() {
-    AuthRequest req = new AuthRequest("url", "clientId").withScopes("scope");
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId").setParameter("scope", "scope");
     MockCallback callback = new MockCallback();
-    auth.login(req, callback);
+    auth.login(req, callback, "access_token");
 
     // Simulates the auth provider's error response, with the error first, last,
     // and in the middle of the hash, and as the only element in the hash. Also
@@ -247,11 +285,6 @@ public class AuthTest extends GWTTestCase {
         callback,
         "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!&error_uri=example.com",
         "Error from provider: redirect_uri_mismatch (Bad dog!); see: example.com");
-
-    // If the hash contains a key that ends in error, but not error=, the error
-    // will be that the hash was malformed
-    assertError(callback, "#wxyzerror=redirect_uri_mismatch",
-        "Could not find access_token in hash #wxyzerror=redirect_uri_mismatch");
   }
 
   private void assertError(MockCallback callback, String hash, String error) {
@@ -264,7 +297,7 @@ public class AuthTest extends GWTTestCase {
     assertEquals(error, callback.failure.getMessage());
 
     // onSuccess() was not called.
-    assertNull(callback.token);
+    assertNull(callback.params);
   }
 
   private static class MockAuth extends Auth {
@@ -274,12 +307,12 @@ public class AuthTest extends GWTTestCase {
     private static final TokenStore TOKEN_STORE = new InMemoryTokenStore();
 
     MockAuth() {
-      super(TOKEN_STORE, new MockClock(), new MockUrlCodex(),
-          new StubScheduler(), "popup.html");
+      super(TOKEN_STORE, new MockClock(), new StubScheduler());
+      TOKEN_STORE.clear();
     }
 
     @Override
-    void doLogin(String authUrl, Callback<String, Throwable> callback) {
+    void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback) {
       loggedInViaPopup = true;
       lastUrl = authUrl;
     }
@@ -291,18 +324,6 @@ public class AuthTest extends GWTTestCase {
     @Override
     public double now() {
       return now;
-    }
-  }
-
-  static class MockUrlCodex implements Auth.UrlCodex {
-    @Override
-    public String encode(String url) {
-      return url;
-    }
-
-    @Override
-    public String decode(String url) {
-      return url;
     }
   }
 
@@ -325,13 +346,13 @@ public class AuthTest extends GWTTestCase {
     }
   }
 
-  private static class MockCallback implements Callback<String, Throwable> {
-    private String token;
+  private static class MockCallback implements Callback<Map<String, String>, Throwable> {
+    private Map<String, String> params;
     private Throwable failure;
 
     @Override
-    public void onSuccess(String token) {
-      this.token = token;
+    public void onSuccess(Map<String, String> params) {
+      this.params = params;
     }
 
     @Override
