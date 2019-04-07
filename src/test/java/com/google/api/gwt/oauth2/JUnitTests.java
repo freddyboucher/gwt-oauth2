@@ -18,19 +18,19 @@ package com.google.api.gwt.oauth2;
 
 import com.google.api.gwt.oauth2.client.AuthRequestTest;
 import com.google.api.gwt.oauth2.client.AuthTest;
+import com.google.gwt.junit.tools.GWTTestSuite;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Test Suite for the {@code gwt-oauth2} library.
  *
  * @author jasonhall@google.com (Jason Hall)
  */
-public class JUnitTests extends TestSuite {
+public class JUnitTests {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite("JUnit tests for OAuth2 library");
+    GWTTestSuite suite = new GWTTestSuite("JUnit tests for OAuth2 library");
     suite.addTestSuite(AuthTest.class);
     suite.addTestSuite(AuthRequestTest.class);
     return suite;

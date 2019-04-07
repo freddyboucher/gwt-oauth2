@@ -1,41 +1,42 @@
 package com.google.api.gwt.oauth2.client;
 
-import org.junit.Test;
+import com.google.gwt.junit.client.GWTTestCase;
 
-import junit.framework.TestCase;
+public class AuthRequestTest extends GWTTestCase {
 
-public class AuthRequestTest extends TestCase {
-
-  @Test
-  public void testAsString() {
-    AuthRequest req1 = new AuthRequest("url", "clientId").withScopes("scope");
-    assertEquals("clientId-----&scope=scope", req1.asString());
-
-    AuthRequest req2 = new AuthRequest("url", "clientId").withParameter("scope", "scope");
-    assertEquals("clientId-----&scope=scope", req2.asString());
-
-    AuthRequest req3 = new AuthRequest("url", "clientId").withScopes("scope").withParameter("key", "value");
-    assertEquals("clientId-----&scope=scope&key=value", req3.asString());
-
-    AuthRequest req4 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2");
-    assertEquals("clientId-----&scope=scope1 scope2", req4.asString());
-
-    AuthRequest req5 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2").withValueDelimiter(",");
-    assertEquals("clientId-----&scope=scope1,scope2", req5.asString());
+  @Override
+  public String getModuleName() {
+    return "com.google.api.gwt.oauth2.OAuth2";
   }
 
-  @Test
+  public void testAsString() {
+    AuthRequest req1 = new AuthRequest("url", "clientId").withScopes("scope");
+    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}", req1.asJson());
+
+    AuthRequest req2 = new AuthRequest("url", "clientId").withParameter("scope", "scope");
+    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}", req2.asJson());
+
+    AuthRequest req3 = new AuthRequest("url", "clientId").withScopes("scope").withParameter("key", "value");
+    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"], \"key\":[\"value\"]}, \"value_delimiter\":\" \"}", req3.asJson());
+
+    AuthRequest req4 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2");
+    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\" \"}", req4.asJson());
+
+    AuthRequest req5 = new AuthRequest("url", "clientId").withScopes("scope1", "scope2").withValueDelimiter(",");
+    assertEquals("{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\",\"}", req5.asJson());
+  }
+
   public void testFromString() {
-    String string1 = "clientId-----&scope=scope";
-    assertEquals(string1, AuthRequest.fromString(string1).asString());
+    String string1 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"]}, \"value_delimiter\":\" \"}";
+    assertEquals(string1, AuthRequest.fromJson(string1).asJson());
 
-    String string2 = "clientId-----&scope=scope&key=value";
-    assertEquals(string2, AuthRequest.fromString(string2).asString());
+    String string2 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope\"], \"key\":[\"value\"]}, \"value_delimiter\":\" \"}";
+    assertEquals(string2, AuthRequest.fromJson(string2).asJson());
 
-    String string3 = "clientId-----&scope=scope1,scope2";
-    assertEquals(string3, AuthRequest.fromString(string3).asString());
+    String string3 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\",\"}";
+    assertEquals(string3, AuthRequest.fromJson(string3).asJson());
 
-    String string4 = "clientId-----&scope=scope1 scope2";
-    assertEquals(string4, AuthRequest.fromString(string4).asString());
+    String string4 = "{\"client_id\":\"clientId\", \"parameters\":{\"scope\":[\"scope1\",\"scope2\"]}, \"value_delimiter\":\" \"}";
+    assertEquals(string4, AuthRequest.fromJson(string4).asJson());
   }
 }

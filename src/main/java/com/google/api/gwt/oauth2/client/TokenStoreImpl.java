@@ -37,7 +37,7 @@ class TokenStoreImpl implements TokenStore {
   @Override
   public native String get(String key) /*-{
     return JSON.parse($wnd.localStorage.getItem(
-      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || '';
+      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || null;
   }-*/;
 
   @Override

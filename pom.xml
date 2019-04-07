@@ -22,8 +22,19 @@
       <version>2.8.2</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
+      <version>1.0.2</version>
+    </dependency>
 
     <!-- Unit tests -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>2.8.2</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -40,6 +51,7 @@
         <version>1.0-rc-10</version>
         <extensions>true</extensions>
         <configuration>
+          <sourceLevel>auto</sourceLevel>
           <moduleName>com.google.api.gwt.oauth2.OAuth2</moduleName>
           <moduleTemplate>src/main/resources/com/google/api/gwt/oauth2/OAuth2.gwt.xml</moduleTemplate>
           <includes>

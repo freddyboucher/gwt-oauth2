@@ -24,21 +24,25 @@ import com.google.api.gwt.oauth2.client.Auth.TokenInfo;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.testing.StubScheduler;
-
-import junit.framework.TestCase;
+import com.google.gwt.junit.client.GWTTestCase;
 
 /**
  * Tests for {@link Auth}.
  *
  * @author jasonhall@google.com (Jason Hall)
  */
-public class AuthTest extends TestCase {
+public class AuthTest extends GWTTestCase {
 
   private MockAuth auth;
 
   @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  public String getModuleName() {
+    return "com.google.api.gwt.oauth2.OAuth2";
+  }
+
+  @Override
+  protected void gwtSetUp() throws Exception {
+    super.gwtSetUp();
     auth = new MockAuth();
   }
 
@@ -68,7 +72,7 @@ public class AuthTest extends TestCase {
     // Storing a token that expires soon (in just under 10 minutes)
     TokenInfo info = new TokenInfo();
     info.accessToken = "expired";
-    info.expires = String.valueOf(MockClock.now + 10 * 60 * 1000 - 1);
+    info.expires = MockClock.now + 10 * 60 * 1000 - 1;
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
@@ -92,7 +96,7 @@ public class AuthTest extends TestCase {
     // Storing a token that does not expire soon (in exactly 10 minutes)
     TokenInfo info = new TokenInfo();
     info.accessToken = "notExpiringSoon";
-    info.expires = String.valueOf(MockClock.now + 10 * 60 * 1000);
+    info.expires = MockClock.now + 10 * 60 * 1000;
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
@@ -159,9 +163,9 @@ public class AuthTest extends TestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromString(ts.store.get(req.asString()));
+    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.asJson()));
     assertEquals("foo", info.accessToken);
-    assertEquals("1.0005E7", info.expires);
+    assertEquals(10005000D, info.expires);
   }
 
   /**
@@ -207,7 +211,7 @@ public class AuthTest extends TestCase {
     assertEquals(1, ts.store.size());
 
     // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromString(ts.store.get(req.asString()));
+    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.asJson()));
     assertEquals("foo", info.accessToken);
     assertNull(info.expires);
   }

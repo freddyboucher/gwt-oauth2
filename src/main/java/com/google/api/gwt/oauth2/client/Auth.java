@@ -20,6 +20,11 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
 /**
  * Provides methods to manage authentication flow.
  *
@@ -108,7 +113,7 @@ public abstract class Auth {
     // TODO(jasonhall): Consider varying the definition of "soon" based on the
     // original expires_in value (e.g., "soon" = 1/10th of the total time before
     // it's expired).
-    return Double.valueOf(info.expires) < (clock.now() + TEN_MINUTES);
+    return info.expires < (clock.now() + TEN_MINUTES);
   }
 
   /**
@@ -175,7 +180,7 @@ public abstract class Auth {
       } else if (key.equals("expires_in")) {
         // expires_in is seconds, convert to milliseconds and add to now
         double expiresIn = Double.valueOf(val) * 1000;
-        info.expires = String.valueOf(clock.now() + expiresIn);
+        info.expires = clock.now() + expiresIn;
       } else if (key.equals("error")) {
         error = val;
       } else if (key.equals("error_description")) {
@@ -218,12 +223,12 @@ public abstract class Auth {
   }
 
   TokenInfo getToken(AuthRequest req) {
-    String tokenStr = tokenStore.get(req.asString());
-    return tokenStr != null ? TokenInfo.fromString(tokenStr) : null;
+    String tokenStr = tokenStore.get(req.asJson());
+    return tokenStr != null ? TokenInfo.fromJson(tokenStr) : null;
   }
 
   void setToken(AuthRequest req, TokenInfo info) {
-    tokenStore.set(req.asString(), info.asString());
+    tokenStore.set(req.asJson(), info.asJson());
   }
 
   /**
@@ -239,21 +244,22 @@ public abstract class Auth {
     tokenStore.clear();
   }
 
-  /** Encapsulates information an access token and when it will expire. */
-  static class TokenInfo {
-    String accessToken;
-    String expires;
+  /**
+   * Encapsulates information an access token and when it will expire.
+   */
+  @JsType(namespace = JsPackage.GLOBAL, isNative = true, name = "Object")
+  static final class TokenInfo {
+    @JsProperty(name = "access_token") String accessToken;
+    Double expires;
 
-    String asString() {
-      return accessToken + "-----" + (expires == null ? "" : expires);
+    @JsOverlay
+    public String asJson() {
+      return JSON.stringify(this);
     }
 
-    static TokenInfo fromString(String val) {
-      String[] parts = val.split("-----");
-      TokenInfo info = new TokenInfo();
-      info.accessToken = parts[0];
-      info.expires = parts.length > 1 ? parts[1] : null;
-      return info;
+    @JsOverlay
+    public static TokenInfo fromJson(String val) {
+      return (TokenInfo) JSON.parse(val);
     }
   }
 }

@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+
 /**
  * Represents a request for authentication to an OAuth 2.0 provider server.
  *
@@ -28,7 +33,7 @@ import java.util.Map.Entry;
 public class AuthRequest {
   private final String authUrl;
   private final String clientId;
-  private Map<String, String[]> parameters;
+  private final Map<String, String[]> parameters = new HashMap<String, String[]>();
   private String valueDelimiter = " ";
 
   /**
@@ -71,9 +76,6 @@ public class AuthRequest {
 
   /** Set some OAuth 2.0 parameter to request access to. */
   public AuthRequest withParameter(String key, String... values) {
-    if (parameters == null) {
-      parameters = new HashMap<String, String[]>();
-    }
     parameters.put(key, values);
     return this;
   }
@@ -90,9 +92,21 @@ public class AuthRequest {
   }
 
   /** Returns a unique representation of this request for use as a cookie name. */
-  String asString() {
+  String asJson() {
     // Don't need to URL-encode the scopes since they're just stored here.
-    return clientId + "-----" + parametersToString(null);
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("client_id", new JSONString(clientId));
+    JSONObject parameterJsonObject = new JSONObject();
+    for (Entry<String, String[]> entry : parameters.entrySet()) {
+      JSONArray jsonArray = new JSONArray();
+      for (int i = 0; i < entry.getValue().length; i++) {
+        jsonArray.set(i, new JSONString(entry.getValue()[i]));
+      }
+      parameterJsonObject.put(entry.getKey(), jsonArray);
+    }
+    jsonObject.put("parameters", parameterJsonObject);
+    jsonObject.put("value_delimiter", new JSONString(valueDelimiter));
+    return jsonObject.toString();
   }
 
   /**
@@ -121,7 +135,7 @@ public class AuthRequest {
   }
 
   private String parametersToString(Auth.UrlCodex urlCodex) {
-    if (parameters == null || parameters.isEmpty()) {
+    if (parameters.isEmpty()) {
       return "";
     }
     StringBuilder sb = new StringBuilder();
@@ -139,29 +153,19 @@ public class AuthRequest {
   }
 
   /** Returns an {@link AuthRequest} represented by the string serialization. */
-  static AuthRequest fromString(String str) {
-    String[] parts = str.split("-----");
-    String clientId = parts[0];
+  static AuthRequest fromJson(String str) {
+    JSONObject jsonObject = JSONParser.parseStrict(str).isObject();
+    String clientId = jsonObject.get("client_id").isString().stringValue();
     AuthRequest req = new AuthRequest("", clientId);
-    if (parts.length == 2) {
-      String[] parameters = parts[1].split("&");
-      for (String parameter : parameters) {
-        if (!parameter.isEmpty()) {
-          String[] splitParameter = parameter.split("=");
-          if (splitParameter.length > 0) {
-            String key = splitParameter[0];
-            if (splitParameter.length == 2) {
-              if (splitParameter[1].contains(",")) {
-                req.withValueDelimiter(",");
-              } else if (splitParameter[1].contains("+")) {
-                req.withValueDelimiter("+");
-              }
-            }
-            String[] values = splitParameter.length == 2 ? splitParameter[1].split(req.getValueDelimiter()) : new String[0];
-            req.withParameter(key, values);
-          }
-        }
+    req.valueDelimiter = jsonObject.get("value_delimiter").isString().stringValue();
+    JSONObject parameterJsonObject = jsonObject.get("parameters").isObject();
+    for (String key : parameterJsonObject.keySet()) {
+      JSONArray jsonArray = parameterJsonObject.get(key).isArray();
+      String[] array = new String[jsonArray.size()];
+      for (int i = 0; i < jsonArray.size(); i++) {
+        array[i] = jsonArray.get(i).isString().stringValue();
       }
+      req.parameters.put(key, array);
     }
     return req;
   }
