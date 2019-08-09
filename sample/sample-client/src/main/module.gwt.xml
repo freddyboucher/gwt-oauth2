@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.user.theme.clean.Clean"/>
+  <inherits name="com.google.api.gwt.oauth2.OAuth2"/>
+  <inherits name="com.google.gwt.logging.Logging"/>
+
+  <source path=""/>
+
+  <entry-point class="com.google.api.App"/>
+
+  <set-property name="compiler.stackMode" value="emulated"/>
+  <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>
+  <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true"/>
+</module>
