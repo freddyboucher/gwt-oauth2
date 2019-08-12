@@ -157,9 +157,7 @@ public abstract class Auth {
   // This method is called via a global method defined in AuthImpl.register()
   @SuppressWarnings("unused")
   void finish(String hash) {
-    if (!hash.startsWith("#")) {
-      lastCallback.onFailure(new RuntimeException("Invalid hash: " + hash));
-    } else {
+    if (hash.startsWith("#")) {
       Map<String, String> params = new HashMap<String, String>();
 
       // Iterate over keys and values in the string hash value to find relevant
@@ -208,6 +206,8 @@ public abstract class Auth {
         setToken(lastRequest, info);
         answerCallback(info);
       }
+    } else {
+      lastCallback.onFailure(new RuntimeException("Invalid hash: " + hash));
     }
   }
 
