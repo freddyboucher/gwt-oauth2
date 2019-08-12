@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.api</groupId>
+    <groupId>io.github.freddyboucher.gwt.oauth2</groupId>
     <artifactId>sample</artifactId>
     <version>0.3-SNAPSHOT</version>
     <relativePath>..</relativePath>
@@ -35,7 +35,7 @@
       <artifactId>gwt-dev</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.api</groupId>
+      <groupId>io.github.freddyboucher</groupId>
       <artifactId>gwt-oauth2</artifactId>
       <version>0.3-SNAPSHOT</version>
       <type>gwt-lib</type>
@@ -48,7 +48,7 @@
         <groupId>net.ltgt.gwt.maven</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <moduleName>com.google.api.App</moduleName>
+          <moduleName>io.github.freddyboucher.gwt.oauth2.sample.App</moduleName>
           <moduleShortName>app</moduleShortName>
         </configuration>
       </plugin>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.google.api</groupId>
+  <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>gwt-lib</packaging>
@@ -77,8 +77,8 @@
         <extensions>true</extensions>
         <configuration>
           <sourceLevel>auto</sourceLevel>
-          <moduleName>com.google.api.gwt.oauth2.OAuth2</moduleName>
-          <moduleTemplate>src/main/resources/com/google/api/gwt/oauth2/OAuth2.gwt.xml
+          <moduleName>io.github.freddyboucher.gwt.oauth2.OAuth2</moduleName>
+          <moduleTemplate>src/main/resources/io/github/freddyboucher/gwt/oauth2/OAuth2.gwt.xml
           </moduleTemplate>
           <includes>
             <include>**/JUnitTests.java</include>

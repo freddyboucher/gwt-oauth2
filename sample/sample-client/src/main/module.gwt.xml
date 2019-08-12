@@ -2,12 +2,12 @@
 <module>
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.user.theme.clean.Clean"/>
-  <inherits name="com.google.api.gwt.oauth2.OAuth2"/>
+  <inherits name="io.github.freddyboucher.gwt.oauth2.OAuth2"/>
   <inherits name="com.google.gwt.logging.Logging"/>
 
   <source path=""/>
 
-  <entry-point class="com.google.api.App"/>
+  <entry-point class="io.github.freddyboucher.gwt.oauth2.sample.App"/>
 
   <set-property name="compiler.stackMode" value="emulated"/>
   <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>

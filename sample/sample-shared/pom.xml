@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.api</groupId>
+    <groupId>io.github.freddyboucher.gwt.oauth2</groupId>
     <artifactId>sample</artifactId>
     <version>0.3-SNAPSHOT</version>
     <relativePath>..</relativePath>

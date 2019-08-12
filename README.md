@@ -12,14 +12,14 @@ Quick start
 1\. Add the Maven denpendency
 ```xml
 <dependency>
-  <groupId>com.google.api</groupId>
+  <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
   <version>0.3-SNAPSHOT</version>
   <scope>provided</scope>
 </dependency>
 ```
 
-2\. Add `<inherits name="com.google.api.gwt.oauth2.OAuth2"/>` to your GWT module XML file.
+2\. Add `<inherits name="io.github.freddyboucher.gwt.oauth2.OAuth2"/>` to your GWT module XML file.
 
 3\. Use it as follow:
 ```java
