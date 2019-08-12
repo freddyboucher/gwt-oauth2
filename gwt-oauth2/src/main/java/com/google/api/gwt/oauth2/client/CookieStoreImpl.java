@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,12 +19,13 @@ package com.google.api.gwt.oauth2.client;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Backup implementation of TokenStore storing tokens in cookies, for
- * browsers where localStorage is not supported.
- * 
+ * Backup implementation of TokenStore storing tokens in cookies, for browsers where localStorage is
+ * not supported.
+ *
  * @author jasonhall@google.com (Jason Hall)
  */
 class CookieStoreImpl implements TokenStore {
+
   private static final String COOKIE_PREFIX = "gwt-oauth2-";
 
   @Override
@@ -53,7 +54,7 @@ class CookieStoreImpl implements TokenStore {
     @com.google.api.gwt.oauth2.client.CookieStoreImpl::cachedCookies = null;
   }-*/;
 
-  private static JavaScriptObject cachedCookies = null;
+  private static JavaScriptObject cachedCookies;
 
   // Used only in JSNI.
   private static String rawCookies;
@@ -63,7 +64,7 @@ class CookieStoreImpl implements TokenStore {
     var docCookie = $doc.cookie;
     if (docCookie && docCookie !== '') {
       var crumbs = docCookie.split('; ');
-      for ( var i = 0; i < crumbs.length; ++i) {
+      for (var i = 0; i < crumbs.length; ++i) {
         var name, value;
         var eqIdx = crumbs[i].indexOf('=');
         if (eqIdx === -1) {
@@ -89,7 +90,7 @@ class CookieStoreImpl implements TokenStore {
   }-*/;
 
   private static JavaScriptObject ensureCookies() {
-    if (cachedCookies == null || needsRefresh()) {
+    if (null == cachedCookies || needsRefresh()) {
       loadCookies();
     }
     return cachedCookies;
@@ -98,11 +99,11 @@ class CookieStoreImpl implements TokenStore {
   private static native boolean needsRefresh() /*-{
     var docCookie = $doc.cookie;
     // Check to see if cached cookies need to be invalidated.
-    if (docCookie !== @com.google.gwt.user.client.Cookies::rawCookies) {
+    if (docCookie === @com.google.gwt.user.client.Cookies::rawCookies) {
+      return false;
+    } else {
       @com.google.gwt.user.client.Cookies::rawCookies = docCookie;
       return true;
-    } else {
-      return false;
     }
   }-*/;
 }

@@ -23,7 +23,6 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,17 +35,19 @@ import java.util.Map;
  */
 public abstract class Auth {
 
-  /** Instance of the {@link Auth} to use in a GWT application. */
-  public static final Auth get() {
+  /**
+   * Instance of the {Auth} to use in a GWT application.
+   */
+  public static Auth get() {
     return AuthImpl.INSTANCE;
   }
 
-  final TokenStore tokenStore;
+  protected final TokenStore tokenStore;
   private final Clock clock;
-  final Scheduler scheduler;
+  protected final Scheduler scheduler;
 
-  int height = 600;
-  int width = 800;
+  protected int height = 600;
+  protected int width = 800;
 
   Auth(TokenStore tokenStore, Clock clock, Scheduler scheduler) {
     this.tokenStore = tokenStore;
@@ -63,25 +64,24 @@ public abstract class Auth {
   /**
    * Request an access token from an OAuth 2.0 provider.
    *
-   * <p>
-   * If it can be determined that the user has already granted access, and the
-   * token has not yet expired, and that the token will not expire soon, the
-   * existing token will be passed to the callback.
-   * </p>
+   * <p>If it can be determined that the user has already granted access, and the token has not yet
+   * expired, and that the token will not expire soon, the existing token will be passed to the
+   * callback.
    *
-   * <p>
-   * Otherwise, a popup window will be displayed which may prompt the user to
-   * grant access. If the user has already granted access the popup will
-   * immediately close and the token will be passed to the callback. If access
-   * hasn't been granted, the user will be prompted, and when they grant, the
-   * token will be passed to the callback.
-   * </p>
-   *  @param req Request for authentication.
-   * @param callback Callback to pass the token to when access has been granted.
-   * @param requiredParams
+   * <p>Otherwise, a popup window will be displayed which may prompt the user to grant access. If
+   * the user has already granted access the popup will immediately close and the token will be
+   * passed to the callback. If access hasn't been granted, the user will be prompted, and when they
+   * grant, the token will be passed to the callback.
+   *
+   * @param req            Request for authentication.
+   * @param callback       Callback to pass the token to when access has been granted.
+   * @param requiredParams The required params. It calls the callback#onFailure if response doesn't
+   *                       contain all required params.
    */
-  public void login(AuthRequest req, final Callback<Map<String, String>, Throwable> callback,
-                    String... requiredParams) {
+  public void login(
+      AuthRequest req,
+      final Callback<Map<String, String>, Throwable> callback,
+      String... requiredParams) {
     lastRequest = req;
     lastCallback = callback;
     lastRequiredParams = Arrays.asList(requiredParams);
@@ -90,7 +90,7 @@ public abstract class Auth {
 
     // Try to look up the token we have stored.
     final TokenInfo info = getToken(req);
-    if (info == null || info.expires == null || expiringSoon(info)) {
+    if (null == info || null == info.expires || expiringSoon(info)) {
       // Token wasn't found, or doesn't have an expiration, or is expired or
       // expiring soon. Requesting access will refresh the token.
       doLogin(authUrl, callback);
@@ -98,12 +98,13 @@ public abstract class Auth {
       // Token was found and is good, immediately execute the callback with the
       // access token.
 
-      scheduler.scheduleDeferred(new ScheduledCommand() {
-        @Override
-        public void execute() {
-          answerCallback(info);
-        }
-      });
+      scheduler.scheduleDeferred(
+          new ScheduledCommand() {
+            @Override
+            public void execute() {
+              answerCallback(info);
+            }
+          });
     }
   }
 
@@ -111,30 +112,34 @@ public abstract class Auth {
     if (info.params.keySet().containsAll(lastRequiredParams)) {
       lastCallback.onSuccess(info.params);
     } else {
-      lastCallback
-          .onFailure(new RuntimeException("Could not find required params: " + lastRequiredParams.toString() +
-              " in response: " + info.params.toString()));
+      lastCallback.onFailure(
+          new RuntimeException(
+              "Could not find required params: "
+                  + lastRequiredParams
+                  + " in response: "
+                  + info.params));
     }
   }
 
   /**
-   * Returns whether or not the token will be expiring within the next ten
-   * minutes.
+   * Returns whether or not the token will be expiring within the next ten minutes.
    */
   boolean expiringSoon(TokenInfo info) {
     // TODO(jasonhall): Consider varying the definition of "soon" based on the
     // original expires_in value (e.g., "soon" = 1/10th of the total time before
     // it's expired).
-    return info.expires < (clock.now() + TEN_MINUTES);
+    return info.expires < clock.now() + TEN_MINUTES;
   }
 
   /**
-   * Get the OAuth 2.0 token for which this application may not have already
-   * been granted access, by displaying a popup to the user.
+   * Get the OAuth 2.0 token for which this application may not have already been granted access, by
+   * displaying a popup to the user.
    */
   abstract void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback);
 
-  /** Sets the height of the OAuth 2.0 popup dialog, in pixels. The default is 600px. */
+  /**
+   * Sets the height of the OAuth 2.0 popup dialog, in pixels. The default is 600px.
+   */
   public Auth setWindowHeight(int height) {
     this.height = height;
     return this;
@@ -147,8 +152,7 @@ public abstract class Auth {
   }
 
   /**
-   * Called by the {@code doLogin()} method which is registered as a global
-   * variable on the page.
+   * Called by the {@code doLogin()} method which is registered as a global variable on the page.
    */
   // This method is called via a global method defined in AuthImpl.register()
   @SuppressWarnings("unused")
@@ -165,7 +169,7 @@ public abstract class Auth {
       while (idx < hash.length() - 1) {
         // Grab the next key (between start and '=')
         int nextEq = hash.indexOf('=', idx);
-        if (nextEq < 0) {
+        if (0 > nextEq) {
           break;
         }
         String key = hash.substring(idx, nextEq);
@@ -182,7 +186,8 @@ public abstract class Auth {
       }
 
       if (params.containsKey("error")) {
-        StringBuilder builder = new StringBuilder("Error from provider: ").append(params.get("error"));
+        StringBuilder builder =
+            new StringBuilder("Error from provider: ").append(params.get("error"));
         if (params.containsKey("error_description")) {
           builder.append(" (").append(params.get("error_description")).append(")");
         }
@@ -194,7 +199,7 @@ public abstract class Auth {
         Double expires;
         if (params.containsKey("expires_in")) {
           // expires_in is seconds, convert to milliseconds and add to now
-          double expiresIn = Double.valueOf(params.get("expires_in")) * 1000;
+          double expiresIn = Double.parseDouble(params.get("expires_in")) * 1000;
           expires = clock.now() + expiresIn;
         } else {
           expires = null;
@@ -206,15 +211,18 @@ public abstract class Auth {
     }
   }
 
-  /** Test-compatible abstraction for getting the current time. */
+  /**
+   * Test-compatible abstraction for getting the current time.
+   */
   interface Clock {
+
     // Using double to avoid longs in GWT, which are slow.
     double now();
   }
 
   TokenInfo getToken(AuthRequest req) {
     String tokenStr = tokenStore.get(req.buildString());
-    if (tokenStr != null) {
+    if (null != tokenStr) {
       try {
         return TokenInfo.fromJson(tokenStr);
       } catch (Exception e) {
@@ -231,11 +239,9 @@ public abstract class Auth {
   /**
    * Clears all tokens stored by this class.
    *
-   * <p>
-   * This will result in subsequent calls to
-   * {@link #login(AuthRequest, Callback, String...)} displaying a popup to the user. If
-   * the user has already granted access, that popup will immediately close.
-   * </p>
+   * <p>This will result in subsequent calls to {@link #login(AuthRequest, Callback, String...)}
+   * displaying a popup to the user. If the user has already granted access, that popup will
+   * immediately close.
    */
   public void clearAllTokens() {
     tokenStore.clear();
@@ -244,9 +250,10 @@ public abstract class Auth {
   /**
    * Encapsulates information an access token and when it will expire.
    */
-  static final class TokenInfo {
-    final Map<String, String> params;
-    final Double expires;
+  protected static class TokenInfo {
+
+    protected final Map<String, String> params;
+    protected final Double expires;
 
     public TokenInfo(Double expires, Map<String, String> params) {
       this.expires = expires;
@@ -255,7 +262,7 @@ public abstract class Auth {
 
     public String asJson() {
       JSONObject root = new JSONObject();
-      if (expires != null) {
+      if (null != expires) {
         root.put("expires", new JSONNumber(expires));
       }
       JSONObject paramsJsonObject = new JSONObject();

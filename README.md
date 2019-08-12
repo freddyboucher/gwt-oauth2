@@ -47,3 +47,8 @@ public class App implements EntryPoint {
   }
 }
 ```
+
+Contributing
+-------------
+
+Code must pass [Google Java Style Guide](https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html).

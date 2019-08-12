@@ -17,32 +17,32 @@
 package com.google.api.gwt.oauth2.client;
 
 /**
- * Default implementation of token storage, using localStorage to store tokens
- * (if supported).
+ * Default implementation of token storage, using localStorage to store tokens (if supported).
  *
  * @author jasonhall@google.com (Jason Hall)
  */
 class TokenStoreImpl implements TokenStore {
+
   private static final String KEY = "gwt-oauth2";
 
   @Override
   public native void set(String key, String value) /*-{
     var obj = JSON.parse($wnd.localStorage.getItem(
-      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}');
+        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}');
     obj[key] = value;
     $wnd.localStorage.setItem(
-      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY, JSON.stringify(obj));
+        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY, JSON.stringify(obj));
   }-*/;
 
   @Override
   public native String get(String key) /*-{
     return JSON.parse($wnd.localStorage.getItem(
-      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || null;
+        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || null;
   }-*/;
 
   @Override
   public native void clear() /*-{
     $wnd.localStorage.removeItem(
-      @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY);
+        @com.google.api.gwt.oauth2.client.TokenStoreImpl::KEY);
   }-*/;
 }

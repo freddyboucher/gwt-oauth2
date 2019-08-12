@@ -19,7 +19,6 @@ package com.google.api.gwt.oauth2;
 import com.google.api.gwt.oauth2.client.AuthRequestTest;
 import com.google.api.gwt.oauth2.client.AuthTest;
 import com.google.gwt.junit.tools.GWTTestSuite;
-
 import junit.framework.Test;
 
 /**

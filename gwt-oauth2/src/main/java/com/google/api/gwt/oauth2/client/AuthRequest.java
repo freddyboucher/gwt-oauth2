@@ -26,27 +26,83 @@ import com.google.gwt.http.client.UrlBuilder;
  */
 public class AuthRequest extends UrlBuilder {
 
+  public AuthRequest() {
+  }
+
+  /**
+   * * Construct an AuthRequest with response_type=token.
+   *
+   * @param protocol The protocol: http / https
+   * @param host     The host
+   * @param path     The port
+   * @param clientId The client_id
+   */
   public AuthRequest(String protocol, String host, String path, String clientId) {
     this(protocol, host, null, path, clientId);
   }
 
+  /**
+   * Construct an AuthRequest with response_type=token.
+   *
+   * @param protocol The protocol: http / https
+   * @param host     The host
+   * @param port     The port
+   * @param path     The path
+   * @param clientId The client_id
+   */
   public AuthRequest(String protocol, String host, Integer port, String path, String clientId) {
-    if (protocol != null) {
-      setProtocol(protocol);
+    if (null != protocol) {
+      super.setProtocol(protocol);
     }
-    setHost(host);
-    if (port != null) {
-      setPort(port);
+    super.setHost(host);
+    if (null != port) {
+      super.setPort(port);
     }
-    setPath(path);
-    setParameter("client_id", clientId);
-    setParameter("response_type", "token");
-    setParameter("redirect_uri", GWT.getModuleBaseURL() + "oauthWindow.html");
+    super.setPath(path);
+    super.setParameter("client_id", clientId);
+    super.setParameter("response_type", "token");
+    super.setParameter("redirect_uri", GWT.getModuleBaseURL() + "oauthWindow.html");
   }
 
   @Override
   public AuthRequest setParameter(String key, String... values) {
     super.setParameter(key, values);
+    return this;
+  }
+
+  @Override
+  public AuthRequest removeParameter(String name) {
+    super.removeParameter(name);
+    return this;
+  }
+
+  @Override
+  public AuthRequest setHash(String hash) {
+    super.setHash(hash);
+    return this;
+  }
+
+  @Override
+  public AuthRequest setHost(String host) {
+    super.setHost(host);
+    return this;
+  }
+
+  @Override
+  public AuthRequest setPath(String path) {
+    super.setPath(path);
+    return this;
+  }
+
+  @Override
+  public AuthRequest setPort(int port) {
+    super.setPort(port);
+    return this;
+  }
+
+  @Override
+  public AuthRequest setProtocol(String protocol) {
+    super.setProtocol(protocol);
     return this;
   }
 }

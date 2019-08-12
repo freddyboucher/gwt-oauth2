@@ -68,7 +68,7 @@ public class App implements EntryPoint {
     RootPanel.get().add(panel);
   }
 
-  private Callback<Map<String, String>, Throwable> createCallback() {
+  private static Callback<Map<String, String>, Throwable> createCallback() {
     return new Callback<Map<String, String>, Throwable>() {
       @Override
       public void onFailure(Throwable throwable) {
@@ -109,7 +109,7 @@ public class App implements EntryPoint {
     };
   }
 
-  private void showThrowable(Throwable throwable) {
+  private static void showThrowable(Throwable throwable) {
     LOGGER.log(Level.SEVERE, null, throwable);
     DialogBox box = new DialogBox(true, false);
     box.setGlassEnabled(true);

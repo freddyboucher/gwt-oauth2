@@ -16,13 +16,12 @@
 
 package com.google.api.gwt.oauth2.client;
 
-import java.util.Map;
-
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.storage.client.Storage;
+import java.util.Map;
 
 /**
  * Real implementation of {@link Auth}, used in real GWT applications.
@@ -41,8 +40,8 @@ class AuthImpl extends Auth {
   }
 
   /**
-   * Returns the correct {@link TokenStore} implementation to use based on
-   * browser support for localStorage.
+   * Returns the correct {@link TokenStore} implementation to use based on browser support for
+   * localStorage.
    */
   // TODO(jasonhall): This will not result in CookieStoreImpl being compiled out
   // for browsers that support localStorage, and vice versa? If not, this should
@@ -59,24 +58,24 @@ class AuthImpl extends Auth {
     if (!$wnd.oauth2) {
       $wnd.oauth2 = {};
     }
-    $wnd.oauth2.__doLogin = $entry(function(hash) {
+    $wnd.oauth2.__doLogin = $entry(function (hash) {
       self.@com.google.api.gwt.oauth2.client.Auth::finish(Ljava/lang/String;)(hash);
     });
   }-*/;
 
   /**
-   * Get the OAuth 2.0 token for which this application may not have already
-   * been granted access, by displaying a popup to the user.
+   * Get the OAuth 2.0 token for which this application may not have already been granted access, by
+   * displaying a popup to the user.
    */
   @Override
   void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback) {
-    if (window != null && window.isOpen()) {
+    if (null != window && window.isOpen()) {
       callback.onFailure(new IllegalStateException("Authentication in progress"));
     } else {
       window = openWindow(authUrl, height, width);
-      if (window == null) {
-        callback.onFailure(new RuntimeException(
-            "The authentication popup window appears to have been blocked"));
+      if (null == window) {
+        callback.onFailure(
+            new RuntimeException("The authentication popup window appears to have been blocked"));
       }
     }
   }
@@ -84,7 +83,7 @@ class AuthImpl extends Auth {
   @Override
   void finish(String hash) {
     // Clean up the popup
-    if (window != null && window.isOpen()) {
+    if (null != window && window.isOpen()) {
       window.close();
     }
     super.finish(hash);
@@ -96,7 +95,8 @@ class AuthImpl extends Auth {
     return $wnd.open(url, 'popupWindow', 'width=' + width + ',height=' + height);
   }-*/;
 
-  static final class Window extends JavaScriptObject {
+  private static final class Window extends JavaScriptObject {
+
     @SuppressWarnings("unused")
     protected Window() {
     }
@@ -110,8 +110,11 @@ class AuthImpl extends Auth {
     }-*/;
   }
 
-  /** Real GWT implementation of Clock. */
+  /**
+   * Real GWT implementation of Clock.
+   */
   private static class RealClock implements Clock {
+
     @Override
     public double now() {
       return Duration.currentTimeMillis();
