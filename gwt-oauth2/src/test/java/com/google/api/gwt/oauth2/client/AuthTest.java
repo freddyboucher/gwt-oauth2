@@ -150,21 +150,24 @@ public class AuthTest extends GWTTestCase {
     MockCallback callback = new MockCallback();
     auth.login(req, callback, "access_token");
 
-    // Simulates the auth provider's response
-    auth.finish("#access_token=foo&expires_in=10000");
+    for (String response : new String[]{"#access_token=foo&expires_in=10000",
+        "?access_token=foo&expires_in=10000"}) {
+      // Simulates the auth provider's response
+      auth.finish(response);
 
-    // onSuccess() was called and onFailure() wasn't
-    assertEquals("{access_token=foo, expires_in=10000}", callback.params.toString());
-    assertNull(callback.failure);
+      // onSuccess() was called and onFailure() wasn't
+      assertEquals("{access_token=foo, expires_in=10000}", callback.params.toString());
+      assertNull(callback.failure);
 
-    // A token was stored as a result
-    InMemoryTokenStore ts = (InMemoryTokenStore) auth.tokenStore;
-    assertEquals(1, ts.store.size());
+      // A token was stored as a result
+      InMemoryTokenStore ts = (InMemoryTokenStore) auth.tokenStore;
+      assertEquals(1, ts.store.size());
 
-    // That token is clientId+scope -> foo+expires
-    TokenInfo info = TokenInfo.fromJson(ts.store.get(req.buildString()));
-    assertEquals("{access_token=foo, expires_in=10000}", info.params.toString());
-    assertEquals(10005000.0D, info.expires);
+      // That token is clientId+scope -> foo+expires
+      TokenInfo info = TokenInfo.fromJson(ts.store.get(req.buildString()));
+      assertEquals("{access_token=foo, expires_in=10000}", info.params.toString());
+      assertEquals(10005000.0D, info.expires);
+    }
   }
 
   public void testFinishDifferentResponseType() {
@@ -300,9 +303,9 @@ public class AuthTest extends GWTTestCase {
         "Error from provider: redirect_uri_mismatch (Bad dog!); see: example.com");
   }
 
-  private void assertError(MockCallback callback, String hash, String error) {
+  private void assertError(MockCallback callback, String response, String error) {
     // Simulates the auth provider's error response.
-    auth.finish(hash);
+    auth.finish(response);
 
     // onFailure() was called with a RuntimeException stating the error.
     assertNotNull(callback.failure);

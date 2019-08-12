@@ -27,6 +27,7 @@ public class App implements EntryPoint {
   private static final String FACEBOOK_CLIENT_ID = "916624668730153";
   private static final String INSTAGRAM_CLIENT_ID = "c6bd4c0dd94540a288bdfd388f7edec3";
   private static final String MICROSOFT_CLIENT_ID = "58e9880d-a64f-48d2-9f59-f0cc19fbe536";
+  private static final String APPLE_CLIENT_ID = "com.appspot.gwt-oauth2.client";
 
   @Override
   public void onModuleLoad() {
@@ -59,6 +60,14 @@ public class App implements EntryPoint {
           new AuthRequest("https", "login.microsoftonline.com", "common/oauth2/v2.0/authorize/",
               MICROSOFT_CLIENT_ID).setParameter("scope", "email profile openid");
       Auth.get().login(req, createCallback(), "access_token");
+    }));
+
+    panel.add(new Button("Apple", (ClickHandler) event -> {
+      AuthRequest req =
+          new AuthRequest("https", "appleid.apple.com", "auth/authorize", APPLE_CLIENT_ID)
+              .setParameter("scope", "name email").setParameter("response_type", "code")
+              .setParameter("state", "my_custom_state");
+      Auth.get().login(req, createCallback(), "code");
     }));
 
     Button clearBtn = new Button("Clear All Tokens");

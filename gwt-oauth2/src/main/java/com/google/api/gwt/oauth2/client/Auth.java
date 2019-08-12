@@ -156,26 +156,26 @@ public abstract class Auth {
    */
   // This method is called via a global method defined in AuthImpl.register()
   @SuppressWarnings("unused")
-  void finish(String hash) {
-    if (hash.startsWith("#")) {
+  void finish(String response) {
+    if (response.startsWith("#") || response.startsWith("?")) {
       Map<String, String> params = new HashMap<String, String>();
 
       // Iterate over keys and values in the string hash value to find relevant
       // information like the access token or an error message. The string will be
       // in the form of: #key1=val1&key2=val2&key3=val3 (etc.)
       int idx = 1;
-      while (idx < hash.length() - 1) {
+      while (idx < response.length() - 1) {
         // Grab the next key (between start and '=')
-        int nextEq = hash.indexOf('=', idx);
+        int nextEq = response.indexOf('=', idx);
         if (0 > nextEq) {
           break;
         }
-        String key = hash.substring(idx, nextEq);
+        String key = response.substring(idx, nextEq);
 
         // Grab the next value (between '=' and '&')
-        int nextAmp = hash.indexOf('&', nextEq);
-        nextAmp = nextAmp < 0 ? hash.length() : nextAmp;
-        String val = hash.substring(nextEq + 1, nextAmp);
+        int nextAmp = response.indexOf('&', nextEq);
+        nextAmp = nextAmp < 0 ? response.length() : nextAmp;
+        String val = response.substring(nextEq + 1, nextAmp);
 
         // Start looking from here from now on.
         idx = nextAmp + 1;
@@ -207,7 +207,7 @@ public abstract class Auth {
         answerCallback(info);
       }
     } else {
-      lastCallback.onFailure(new RuntimeException("Invalid hash: " + hash));
+      lastCallback.onFailure(new RuntimeException("Invalid hash: " + response));
     }
   }
 
