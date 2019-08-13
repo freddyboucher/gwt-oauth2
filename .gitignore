@@ -22,3 +22,5 @@ local.properties
 *.iml
 *.idea
 .idea/
+pom.xml.releaseBackup
+release.properties
