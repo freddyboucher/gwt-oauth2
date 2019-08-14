@@ -14,7 +14,7 @@ Quick start
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.3</version>
   <scope>provided</scope>
 </dependency>
 ```
