@@ -23,5 +23,5 @@ action "Google Cloud SDK auth" {
 action "Google Cloud SDK deploy" {
   uses = "freddyboucher/gcloud/cli@master"
   needs = "Google Cloud SDK auth"
-  args = "--quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-0.3 --promote --version=0-3"
+  args = "--quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-0.4-SNAPSHOT --promote --version=0-4-snapshot"
 }
