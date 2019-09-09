@@ -4,6 +4,23 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
 
+  <servlet>
+    <servlet-name>OauthWindow</servlet-name>
+    <jsp-file>/app/oauthWindow.jsp</jsp-file>
+    <init-param>
+      <param-name>compilerSourceVM</param-name>
+      <param-value>1.8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>compilerTargetVM</param-name>
+      <param-value>1.8</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OauthWindow</servlet-name>
+    <url-pattern>/app/oauthWindow.jsp</url-pattern>
+  </servlet-mapping>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>

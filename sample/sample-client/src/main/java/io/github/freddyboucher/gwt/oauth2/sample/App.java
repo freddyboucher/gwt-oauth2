@@ -62,11 +62,19 @@ public class App implements EntryPoint {
       Auth.get().login(req, createCallback(), "access_token");
     }));
 
-    panel.add(new Button("Apple", (ClickHandler) event -> {
+    panel.add(new Button("Apple (no scope)", (ClickHandler) event -> {
+      AuthRequest req =
+          new AuthRequest("https", "appleid.apple.com", "auth/authorize", APPLE_CLIENT_ID)
+              .setParameter("response_type", "code").setParameter("state", "my_custom_state");
+      Auth.get().login(req, createCallback(), "code");
+    }));
+
+    panel.add(new Button("Apple (name/email scope)", (ClickHandler) event -> {
       AuthRequest req =
           new AuthRequest("https", "appleid.apple.com", "auth/authorize", APPLE_CLIENT_ID)
               .setParameter("scope", "name email").setParameter("response_type", "code")
-              .setParameter("state", "my_custom_state");
+              .setParameter("state", "my_custom_state").setParameter("response_mode", "form_post")
+              .setParameter("redirect_uri", GWT.getModuleBaseURL() + "oauthWindow.jsp");
       Auth.get().login(req, createCallback(), "code");
     }));
 
