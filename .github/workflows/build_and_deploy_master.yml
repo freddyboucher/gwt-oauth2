@@ -1,0 +1,26 @@
+name: Build & Deploy master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  mavenBuild:
+    name: Maven build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@master
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: mvn clean install -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - name: Google Cloud SDK auth
+        uses: freddyboucher/gcloud/auth@master
+        env:
+          GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
+      - name: Google Cloud SDK deploy
+        uses: freddyboucher/gcloud/cli@master
+        with:
+          args: --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-0.4-SNAPSHOT --promote --version=0-4-snapshot
