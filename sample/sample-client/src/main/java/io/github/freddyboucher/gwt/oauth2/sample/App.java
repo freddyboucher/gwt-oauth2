@@ -28,6 +28,7 @@ public class App implements EntryPoint {
   private static final String INSTAGRAM_CLIENT_ID = "c6bd4c0dd94540a288bdfd388f7edec3";
   private static final String MICROSOFT_CLIENT_ID = "58e9880d-a64f-48d2-9f59-f0cc19fbe536";
   private static final String APPLE_CLIENT_ID = "com.appspot.gwt-oauth2.client";
+  private static final String AMAZON_COGNITO_CLIENT_ID = "3uqob948bbcrr09v9gfoppdkh3";
 
   @Override
   public void onModuleLoad() {
@@ -76,6 +77,14 @@ public class App implements EntryPoint {
               .setParameter("state", "my_custom_state").setParameter("response_mode", "form_post")
               .setParameter("redirect_uri", GWT.getModuleBaseURL() + "oauthWindow.jsp");
       Auth.get().login(req, createCallback(), "code");
+    }));
+
+    panel.add(new Button("Amazon Cognito", (ClickHandler) event -> {
+      AuthRequest req =
+          new AuthRequest("https", "gwt-oauth2.auth.us-east-2.amazoncognito.com", "login",
+              AMAZON_COGNITO_CLIENT_ID)
+              .setParameter("scope", "email").setParameter("response_type", "code");
+      Auth.get().login(req, createCallback());
     }));
 
     Button clearBtn = new Button("Clear All Tokens");
