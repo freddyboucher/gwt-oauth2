@@ -45,7 +45,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <configuration>
           <configLocation>google_checks.xml</configLocation>
           <encoding>UTF-8</encoding>
@@ -66,7 +66,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.23</version>
+            <version>8.30</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -85,7 +85,7 @@
         <plugin>
           <groupId>net.ltgt.gwt.maven</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>1.0-rc-10</version>
+          <version>1.0.0</version>
           <extensions>true</extensions>
           <configuration>
             <sourceLevel>1.8</sourceLevel>
@@ -98,7 +98,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.1</version>
           <executions>
             <execution>
               <id>attach-sources</id>
