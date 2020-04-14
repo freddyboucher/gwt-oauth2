@@ -19,6 +19,7 @@ package io.github.freddyboucher.gwt.oauth2.client;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -180,7 +181,7 @@ public abstract class Auth {
         // Start looking from here from now on.
         idx = nextAmp + 1;
 
-        params.put(key, val);
+        params.put(key, URL.decode(val));
       }
 
       if (params.containsKey("error")) {

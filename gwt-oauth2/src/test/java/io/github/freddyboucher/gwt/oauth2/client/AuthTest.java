@@ -242,6 +242,20 @@ public class AuthTest extends GWTTestCase {
     assertNull(callback.failure);
   }
 
+  public void testFinish_urlEncodedParams() {
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId")
+        .setParameter("scope", "openid email");
+    MockCallback callback = new MockCallback();
+    auth.login(req, callback);
+
+    // Simulates the auth provider's response
+    auth.finish("#scope=openid%20email");
+
+    // onSuccess() was called and onFailure() wasn't
+    assertEquals("{scope=openid email}", callback.params.toString());
+    assertNull(callback.failure);
+  }
+
   /**
    * If finish() is passed an access token but no expires time, a TokenInfo will be stored without
    * an expiration time. The next time auth is requested, the iframe will be used, see {@link
