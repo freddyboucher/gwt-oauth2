@@ -289,35 +289,33 @@ public class AuthTest extends GWTTestCase {
    * passed to onFailure() with the provider's auth string.
    */
   public void testFinish_error() {
-    AuthRequest req = new AuthRequest("http", "host", "path", "clientId")
-        .setParameter("scope", "scope");
-    MockCallback callback = new MockCallback();
-    auth.login(req, callback, "access_token");
-
     // Simulates the auth provider's error response, with the error first, last,
     // and in the middle of the hash, and as the only element in the hash. Also
     // finds error descriptions and error URIs.
-    assertError(callback, "#error=redirect_uri_mismatch",
+    assertError("#error=redirect_uri_mismatch",
         "Error from provider: redirect_uri_mismatch");
-    assertError(callback, "#error=redirect_uri_mismatch&foo=bar",
+    assertError("#error=redirect_uri_mismatch&foo=bar",
         "Error from provider: redirect_uri_mismatch");
-    assertError(callback, "#foo=bar&error=redirect_uri_mismatch",
+    assertError("#foo=bar&error=redirect_uri_mismatch",
         "Error from provider: redirect_uri_mismatch");
-    assertError(callback, "#foo=bar&error=redirect_uri_mismatch&bar=baz",
+    assertError("#foo=bar&error=redirect_uri_mismatch&bar=baz",
         "Error from provider: redirect_uri_mismatch");
-    assertError(callback,
-        "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!",
+    assertError(
+        "#foo=bar&error=redirect_uri_mismatch&error_description=Bad%20dog%21",
         "Error from provider: redirect_uri_mismatch (Bad dog!)");
-    assertError(callback,
+    assertError(
         "#foo=bar&error=redirect_uri_mismatch&error_uri=example.com",
         "Error from provider: redirect_uri_mismatch; see: example.com");
     assertError(
-        callback,
         "#foo=bar&error=redirect_uri_mismatch&error_description=Bad dog!&error_uri=example.com",
         "Error from provider: redirect_uri_mismatch (Bad dog!); see: example.com");
   }
 
-  private void assertError(MockCallback callback, String response, String error) {
+  private void assertError(String response, String error) {
+    AuthRequest req = new AuthRequest("http", "host", "path", "clientId")
+        .setParameter("scope", "scope");
+    MockCallback callback = new MockCallback();
+    auth.login(req, callback, "access_token");
     // Simulates the auth provider's error response.
     auth.finish(response);
 

@@ -20,6 +20,7 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.storage.client.Storage;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ class AuthImpl extends Auth {
    * displaying a popup to the user.
    */
   @Override
-  void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback) {
+  void doLogin(String authUrl, final Callback<Map<String, String>, Throwable> callback) {
     if (null != window && window.isOpen()) {
       callback.onFailure(new IllegalStateException("Authentication in progress"));
     } else {
@@ -76,6 +77,17 @@ class AuthImpl extends Auth {
       if (null == window) {
         callback.onFailure(
             new RuntimeException("The authentication popup window appears to have been blocked"));
+      } else {
+        scheduler.scheduleEntry(new RepeatingCommand() {
+          @Override
+          public boolean execute() {
+            if (!window.isOpen()) {
+              callback.onFailure(new RuntimeException(
+                  "The authentication popup window appears to have been closed"));
+            }
+            return window.isOpen();
+          }
+        });
       }
     }
   }

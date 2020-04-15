@@ -84,7 +84,25 @@ public abstract class Auth {
       final Callback<Map<String, String>, Throwable> callback,
       String... requiredParams) {
     lastRequest = req;
-    lastCallback = callback;
+    lastCallback = new Callback<Map<String, String>, Throwable>() {
+      private boolean consumed;
+
+      @Override
+      public void onFailure(Throwable reason) {
+        if (!consumed) {
+          consumed = true;
+          callback.onFailure(reason);
+        }
+      }
+
+      @Override
+      public void onSuccess(Map<String, String> result) {
+        if (!consumed) {
+          consumed = true;
+          callback.onSuccess(result);
+        }
+      }
+    };
     lastRequiredParams = Arrays.asList(requiredParams);
 
     String authUrl = req.buildString();
@@ -94,7 +112,7 @@ public abstract class Auth {
     if (null == info || null == info.expires || expiringSoon(info)) {
       // Token wasn't found, or doesn't have an expiration, or is expired or
       // expiring soon. Requesting access will refresh the token.
-      doLogin(authUrl, callback);
+      doLogin(authUrl, lastCallback);
     } else {
       // Token was found and is good, immediately execute the callback with the
       // access token.
