@@ -249,7 +249,7 @@ public class AuthTest extends GWTTestCase {
     auth.login(req, callback);
 
     // Simulates the auth provider's response
-    auth.finish("#scope=openid%20email");
+    auth.finish("#scope=openid+email");
 
     // onSuccess() was called and onFailure() wasn't
     assertEquals("{scope=openid email}", callback.params.toString());

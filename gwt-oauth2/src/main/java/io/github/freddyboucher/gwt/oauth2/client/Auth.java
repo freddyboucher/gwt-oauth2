@@ -199,7 +199,7 @@ public abstract class Auth {
         // Start looking from here from now on.
         idx = nextAmp + 1;
 
-        params.put(key, URL.decode(val));
+        params.put(key, URL.decodeQueryString(val));
       }
 
       if (params.containsKey("error")) {
