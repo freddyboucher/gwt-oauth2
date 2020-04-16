@@ -14,7 +14,7 @@ Quick start
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>0.4</version>
+  <version>0.5</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -50,7 +50,9 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
-- 0.4 
+- 0.5
+    - Map<String, String> result - values are still URL encoded #10
+- 0.4
     - Map<String, String> result - values are URL encoded #8
     - Callback is never consumed when manually closing the login window #9
 - 0.3
