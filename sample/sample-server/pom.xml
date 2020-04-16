@@ -7,7 +7,7 @@
   <parent>
     <groupId>io.github.freddyboucher.gwt.oauth2</groupId>
     <artifactId>sample</artifactId>
-    <version>0.5</version>
+    <version>0.5-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -43,7 +43,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>1.9.77</version>
         <configuration>
-          <version>0-5</version>
+          <version>0-5-snapshot</version>
           <port>8080</port>
           <project>gwt-oauth2</project>
         </configuration>

@@ -23,4 +23,4 @@ jobs:
       - name: Google Cloud SDK deploy
         uses: freddyboucher/gcloud/cli@master
         with:
-          args: --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-0.5 --promote --version=0-5
+          args: --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-0.5-SNAPSHOT --promote --version=0-5-snapshot
