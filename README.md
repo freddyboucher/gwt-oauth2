@@ -14,7 +14,7 @@ Quick start
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>0.5</version>
+  <version>1.0-RC1</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -67,6 +67,9 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
+- 1.0-RC1
+    - Update GWT to 2.9.0
+    - Migrate JSNI to JsInterop / elemental2
 - 0.5
     - Map<String, String> result - values are still URL encoded #10
 - 0.4
