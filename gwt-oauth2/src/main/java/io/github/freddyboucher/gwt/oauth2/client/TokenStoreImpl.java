@@ -16,33 +16,32 @@
 
 package io.github.freddyboucher.gwt.oauth2.client;
 
-/**
- * Default implementation of token storage, using localStorage to store tokens (if supported).
- *
- * @author jasonhall@google.com (Jason Hall)
- */
+import com.google.gwt.storage.client.Storage;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 class TokenStoreImpl implements TokenStore {
 
-  private static final String KEY = "gwt-oauth2";
+  private final Storage storage;
+
+  TokenStoreImpl() {
+    storage = Storage.getLocalStorageIfSupported();
+  }
 
   @Override
-  public native void set(String key, String value) /*-{
-    var obj = JSON.parse($wnd.localStorage.getItem(
-        @io.github.freddyboucher.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}');
-    obj[key] = value;
-    $wnd.localStorage.setItem(
-        @io.github.freddyboucher.gwt.oauth2.client.TokenStoreImpl::KEY, JSON.stringify(obj));
-  }-*/;
+  public void set(String key, String value) {
+    storage.setItem(STORAGE_PREFIX + key, value);
+  }
 
   @Override
-  public native String get(String key) /*-{
-    return JSON.parse($wnd.localStorage.getItem(
-        @io.github.freddyboucher.gwt.oauth2.client.TokenStoreImpl::KEY) || '{}')[key] || null;
-  }-*/;
+  public String get(String key) {
+    return storage.getItem(STORAGE_PREFIX + key);
+  }
 
   @Override
-  public native void clear() /*-{
-    $wnd.localStorage.removeItem(
-        @io.github.freddyboucher.gwt.oauth2.client.TokenStoreImpl::KEY);
-  }-*/;
+  public void clear() {
+    IntStream.range(0, storage.getLength()).mapToObj(storage::key)
+        .filter(key -> key.startsWith(STORAGE_PREFIX)).collect(Collectors.toList()).forEach(
+        storage::removeItem);
+  }
 }

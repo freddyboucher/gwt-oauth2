@@ -70,8 +70,7 @@ public class AuthTest extends GWTTestCase {
         .setParameter("scope", "scope").setParameter("redirect_uri", "uri");
 
     // Storing a token that expires soon (in just under 10 minutes)
-    TokenInfo info = new TokenInfo(MockClock.now + 10 * 60 * 1000 - 1,
-        new HashMap<String, String>());
+    TokenInfo info = new TokenInfo(MockClock.now + 10 * 60 * 1000 - 1, new HashMap<>());
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
@@ -94,7 +93,7 @@ public class AuthTest extends GWTTestCase {
         .setParameter("scope", "scope");
 
     // Storing a token that does not expire soon (in exactly 10 minutes)
-    HashMap<String, String> params = new HashMap<String, String>();
+    HashMap<String, String> params = new HashMap<>();
     params.put("access_token", "foo");
     TokenInfo info = new TokenInfo(MockClock.now + 10 * 60 * 1000, params);
     auth.setToken(req, info);
@@ -125,7 +124,7 @@ public class AuthTest extends GWTTestCase {
         .setParameter("scope", "scope");
 
     // Storing a token with a null expires time
-    TokenInfo info = new TokenInfo(null, new HashMap<String, String>());
+    TokenInfo info = new TokenInfo(null, new HashMap<>());
     auth.setToken(req, info);
 
     MockCallback callback = new MockCallback();
@@ -359,7 +358,7 @@ public class AuthTest extends GWTTestCase {
 
   private static class InMemoryTokenStore implements TokenStore {
 
-    private final Map<String, String> store = new HashMap<String, String>();
+    private final Map<String, String> store = new HashMap<>();
 
     @Override
     public void set(String key, String value) {

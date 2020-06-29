@@ -23,6 +23,8 @@ package io.github.freddyboucher.gwt.oauth2.client;
  */
 interface TokenStore {
 
+  String STORAGE_PREFIX = "gwt-oauth2-";
+
   void set(String key, String value);
 
   String get(String key);

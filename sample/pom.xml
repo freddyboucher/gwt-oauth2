@@ -94,6 +94,12 @@
             </launcherDir>
             <codeserverWorkDir>${project.basedir}/sample-client/target/gwt/codeserver
             </codeserverWorkDir>
+            <compilerArgs>
+              <arg>-generateJsInteropExports</arg>
+            </compilerArgs>
+            <codeserverArgs>
+              <arg>-generateJsInteropExports</arg>
+            </codeserverArgs>
           </configuration>
         </plugin>
         <plugin>

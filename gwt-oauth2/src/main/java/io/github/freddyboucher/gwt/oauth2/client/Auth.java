@@ -18,7 +18,6 @@ package io.github.freddyboucher.gwt.oauth2.client;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -79,9 +78,7 @@ public abstract class Auth {
    * @param requiredParams The required params. It calls the callback#onFailure if response doesn't
    *                       contain all required params.
    */
-  public void login(
-      AuthRequest req,
-      final Callback<Map<String, String>, Throwable> callback,
+  public void login(AuthRequest req, Callback<Map<String, String>, Throwable> callback,
       String... requiredParams) {
     lastRequest = req;
     lastCallback = new Callback<Map<String, String>, Throwable>() {
@@ -108,7 +105,7 @@ public abstract class Auth {
     String authUrl = req.buildString();
 
     // Try to look up the token we have stored.
-    final TokenInfo info = getToken(req);
+    TokenInfo info = getToken(req);
     if (null == info || null == info.expires || expiringSoon(info)) {
       // Token wasn't found, or doesn't have an expiration, or is expired or
       // expiring soon. Requesting access will refresh the token.
@@ -117,13 +114,7 @@ public abstract class Auth {
       // Token was found and is good, immediately execute the callback with the
       // access token.
 
-      scheduler.scheduleDeferred(
-          new ScheduledCommand() {
-            @Override
-            public void execute() {
-              answerCallback(info);
-            }
-          });
+      scheduler.scheduleDeferred(() -> answerCallback(info));
     }
   }
 
@@ -177,7 +168,7 @@ public abstract class Auth {
   @SuppressWarnings("unused")
   void finish(String response) {
     if (response.startsWith("#") || response.startsWith("?")) {
-      Map<String, String> params = new HashMap<String, String>();
+      Map<String, String> params = new HashMap<>();
 
       // Iterate over keys and values in the string hash value to find relevant
       // information like the access token or an error message. The string will be
@@ -293,7 +284,7 @@ public abstract class Auth {
     }
 
     public static TokenInfo fromJson(String val) {
-      Map<String, String> response = new HashMap<String, String>();
+      Map<String, String> response = new HashMap<>();
       JSONObject root = JSONParser.parseStrict(val).isObject();
       Double expires;
       if (root.containsKey("expires")) {

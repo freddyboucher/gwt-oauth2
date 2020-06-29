@@ -16,24 +16,17 @@
 
 package io.github.freddyboucher.gwt.oauth2.client;
 
-import com.google.gwt.user.client.Cookies;
-import java.util.stream.Collectors;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
-class CookieStoreImpl implements TokenStore {
+@JsType
+public class OAuth2 {
 
-  @Override
-  public void set(String key, String value) {
-    Cookies.setCookie(STORAGE_PREFIX + key, value);
-  }
+  @JsProperty(namespace = JsPackage.GLOBAL)
+  public static final OAuth2 oauth2 = new OAuth2();
 
-  @Override
-  public String get(String key) {
-    return Cookies.getCookie(STORAGE_PREFIX + key);
-  }
-
-  @Override
-  public void clear() {
-    Cookies.getCookieNames().stream().filter(key -> key.startsWith(STORAGE_PREFIX))
-        .collect(Collectors.toList()).forEach(Cookies::removeCookie);
+  public void __doLogin(String response) {
+    AuthImpl.INSTANCE.finish(response);
   }
 }
