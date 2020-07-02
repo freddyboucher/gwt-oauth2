@@ -67,7 +67,7 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
- 1.0-RC2
+- 1.0-RC2
     - Fix: Uncaught TypeError: Cannot set property 'innerText' of null
     - Add 'viewport' meta to have a readable message on Mobile device
 - 1.0-RC1

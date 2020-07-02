@@ -14,7 +14,7 @@
 
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>1.0-RC2</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>gwt-lib</packaging>
 
   <name>gwt-oauth2</name>
@@ -209,7 +209,7 @@
     <connection>scm:git:git://github.com/dexecutor/dependent-tasks-executor.git</connection>
     <developerConnection>scm:git:git@github.com:dexecutor/dexecutor.git</developerConnection>
     <url>https://github.com/dexecutor/dependent-tasks-executor</url>
-    <tag>1.0-RC2</tag>
+    <tag>1.0-SNAPSHOT</tag>
   </scm>
 
   <profiles>
