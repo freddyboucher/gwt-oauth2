@@ -236,7 +236,7 @@ public abstract class Auth {
       try {
         return TokenInfo.fromJson(tokenStr);
       } catch (Exception e) {
-        tokenStore.clear();
+        tokenStore.remove(req.buildString());
       }
     }
     return null;
@@ -255,6 +255,10 @@ public abstract class Auth {
    */
   public void clearAllTokens() {
     tokenStore.clear();
+  }
+
+  public TokenStore getTokenStore() {
+    return tokenStore;
   }
 
   /**

@@ -17,6 +17,7 @@
 package io.github.freddyboucher.gwt.oauth2.client;
 
 import com.google.gwt.user.client.Cookies;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 class CookieStoreImpl implements TokenStore {
@@ -32,8 +33,13 @@ class CookieStoreImpl implements TokenStore {
   }
 
   @Override
-  public void clear() {
-    Cookies.getCookieNames().stream().filter(key -> key.startsWith(STORAGE_PREFIX))
-        .collect(Collectors.toList()).forEach(Cookies::removeCookie);
+  public void remove(String key) {
+    Cookies.removeCookie(STORAGE_PREFIX + key);
+  }
+
+  @Override
+  public Set<String> keySet() {
+    return Cookies.getCookieNames().stream().filter(key -> key.startsWith(STORAGE_PREFIX))
+        .map(key -> key.substring(STORAGE_PREFIX.length())).collect(Collectors.toSet());
   }
 }

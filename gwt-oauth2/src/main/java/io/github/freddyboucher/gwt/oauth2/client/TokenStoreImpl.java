@@ -17,6 +17,7 @@
 package io.github.freddyboucher.gwt.oauth2.client;
 
 import com.google.gwt.storage.client.Storage;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,9 +40,14 @@ class TokenStoreImpl implements TokenStore {
   }
 
   @Override
-  public void clear() {
-    IntStream.range(0, storage.getLength()).mapToObj(storage::key)
-        .filter(key -> key.startsWith(STORAGE_PREFIX)).collect(Collectors.toList()).forEach(
-        storage::removeItem);
+  public void remove(String key) {
+    storage.removeItem(STORAGE_PREFIX + key);
+  }
+
+  @Override
+  public Set<String> keySet() {
+    return IntStream.range(0, storage.getLength()).mapToObj(storage::key)
+        .filter(key -> key.startsWith(STORAGE_PREFIX))
+        .map(key -> key.substring(STORAGE_PREFIX.length())).collect(Collectors.toSet());
   }
 }

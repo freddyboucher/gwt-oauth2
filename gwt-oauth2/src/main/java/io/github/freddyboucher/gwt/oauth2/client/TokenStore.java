@@ -16,12 +16,14 @@
 
 package io.github.freddyboucher.gwt.oauth2.client;
 
+import java.util.Set;
+
 /**
  * Interface for storing, retrieving, and clearing stored tokens.
  *
  * @author jasonhall@google.com (Jason Hall)
  */
-interface TokenStore {
+public interface TokenStore {
 
   String STORAGE_PREFIX = "gwt-oauth2-";
 
@@ -29,5 +31,11 @@ interface TokenStore {
 
   String get(String key);
 
-  void clear();
+  void remove(String key);
+
+  Set<String> keySet();
+
+  default void clear() {
+    keySet().forEach(this::remove);
+  }
 }

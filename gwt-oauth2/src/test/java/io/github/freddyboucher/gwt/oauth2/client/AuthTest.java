@@ -24,6 +24,7 @@ import io.github.freddyboucher.gwt.oauth2.client.Auth.TokenInfo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Tests for {@link Auth}.
@@ -371,8 +372,13 @@ public class AuthTest extends GWTTestCase {
     }
 
     @Override
-    public void clear() {
-      store.clear();
+    public void remove(String key) {
+      store.remove(key);
+    }
+
+    @Override
+    public Set<String> keySet() {
+      return store.keySet();
     }
   }
 
