@@ -14,7 +14,7 @@ Quick start
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>1.0-RC2</version>
+  <version>1.0</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -67,6 +67,8 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
+- 1.0
+    - Expose TokenStore and add TokenStore#keySet and TokenStore#remove
 - 1.0-RC2
     - Fix: Uncaught TypeError: Cannot set property 'innerText' of null
     - Add 'viewport' meta to have a readable message on Mobile device
