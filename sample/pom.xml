@@ -6,7 +6,7 @@
 
   <groupId>io.github.freddyboucher.gwt.oauth2</groupId>
   <artifactId>sample</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
