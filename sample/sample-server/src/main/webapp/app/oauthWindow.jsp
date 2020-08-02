@@ -1,6 +1,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="org.apache.http.client.utils.URIBuilder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page session="false" %>
 <!doctype html>
 <html>
 <head>

@@ -20,4 +20,5 @@
   <staging>
     <enable-jar-classes>false</enable-jar-classes>
   </staging>
+  <sessions-enabled>false</sessions-enabled>
 </appengine-web-app>
