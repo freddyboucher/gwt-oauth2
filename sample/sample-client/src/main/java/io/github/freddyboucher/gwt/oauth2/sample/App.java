@@ -5,13 +5,14 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import io.github.freddyboucher.gwt.oauth2.client.Auth;
 import io.github.freddyboucher.gwt.oauth2.client.AuthRequest;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class App implements EntryPoint {
 
   @Override
   public void onModuleLoad() {
-    HorizontalPanel panel = new HorizontalPanel();
+    VerticalPanel panel = new VerticalPanel();
     panel.setSpacing(10);
 
     panel.add(new Button("Google", (ClickHandler) event -> {
@@ -90,6 +91,12 @@ public class App implements EntryPoint {
     Button clearBtn = new Button("Clear All Tokens");
     clearBtn.addClickHandler(event -> Auth.get().clearAllTokens());
     panel.add(clearBtn);
+
+    Anchor privacyPolicy = new Anchor("Privacy Policy");
+    privacyPolicy.setHref(
+        "https://www.privacypolicygenerator.info/live.php?token=BYr9WP5smDs5lKjfoyjy7XrTGEMcxYtv");
+    privacyPolicy.setTarget("_blank");
+    panel.add(privacyPolicy);
 
     RootPanel.get().add(panel);
   }
