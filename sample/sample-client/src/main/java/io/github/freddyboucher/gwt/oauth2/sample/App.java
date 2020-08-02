@@ -26,7 +26,7 @@ public class App implements EntryPoint {
   private static final String GOOGLE_CLIENT_ID =
       "521140962557-s8135bi5j7gla15u3qtljvm0geumd55s.apps.googleusercontent.com";
   private static final String FACEBOOK_CLIENT_ID = "916624668730153";
-  private static final String INSTAGRAM_CLIENT_ID = "c6bd4c0dd94540a288bdfd388f7edec3";
+  private static final String INSTAGRAM_CLIENT_ID = "1159265561099025";
   private static final String MICROSOFT_CLIENT_ID = "58e9880d-a64f-48d2-9f59-f0cc19fbe536";
   private static final String APPLE_CLIENT_ID = "com.appspot.gwt-oauth2.client";
   private static final String AMAZON_COGNITO_CLIENT_ID = "3uqob948bbcrr09v9gfoppdkh3";
@@ -53,8 +53,9 @@ public class App implements EntryPoint {
     panel.add(new Button("Instagram", (ClickHandler) event -> {
       AuthRequest req =
           new AuthRequest("https", "api.instagram.com", "oauth/authorize", INSTAGRAM_CLIENT_ID)
-              .setParameter("scope", "basic");
-      Auth.get().login(req, createCallback(), "access_token");
+              .setParameter("scope", "user_profile,user_media")
+              .setParameter("response_type", "code");
+      Auth.get().login(req, createCallback(), "code");
     }));
 
     panel.add(new Button("Microsoft", (ClickHandler) event -> {
