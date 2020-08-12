@@ -11,8 +11,8 @@
       request.getParameterMap().forEach((key, values) -> Arrays.stream(values)
               .forEach(value -> uriBuilder.addParameter(key, value)));
       %>
-      if (window.opener && window.opener.oauth2 && window.opener.oauth2.__doLogin) {
-        window.opener.oauth2.__doLogin('<%=uriBuilder.toString()%>');
+      if (window.opener && window.opener.gwtOAuth2 && window.opener.gwtOAuth2.__doLogin) {
+        window.opener.gwtOAuth2.__doLogin('<%=uriBuilder.toString()%>');
       } else {
         document.body.innerText =
             "Your browser seems to be stopping this window from communicating with the main window.";

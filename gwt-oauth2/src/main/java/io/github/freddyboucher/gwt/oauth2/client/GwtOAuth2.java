@@ -21,10 +21,10 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType
-public class OAuth2 {
+public class GwtOAuth2 {
 
   @JsProperty(namespace = JsPackage.GLOBAL)
-  public static final OAuth2 oauth2 = new OAuth2();
+  public static final GwtOAuth2 gwtOAuth2 = new GwtOAuth2();
 
   public void __doLogin(String response) {
     AuthImpl.INSTANCE.finish(response);
