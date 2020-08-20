@@ -9,12 +9,12 @@ Live demo: [https://gwt-oauth2.appspot.com/](https://gwt-oauth2.appspot.com/)
 Quick start
 -------------
 
-1\. Add the Maven denpendency
+1\. Add the Maven dependency
 ```xml
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -67,6 +67,8 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
+- 1.1
+    - Fix: Avoid Google api.js name collision by renaming `oauth2` to `gwtOAuth2`
 - 1.0
     - Expose TokenStore and add TokenStore#keySet and TokenStore#remove
 - 1.0-RC2
