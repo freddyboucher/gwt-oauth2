@@ -16,11 +16,8 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn clean install -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-      - name: Google Cloud SDK auth
-        uses: freddyboucher/gcloud/auth@master
-        env:
-          GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
-      - name: Google Cloud SDK deploy
-        uses: freddyboucher/gcloud/cli@master
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          args: --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-1.2-SNAPSHOT --promote --version=snapshot
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          export_default_credentials: true
+      - run: gcloud --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-1.2-SNAPSHOT --promote --version=snapshot
