@@ -14,6 +14,7 @@
     } else {
     	window.opener.postMessage(location.search, location.url);
     }
+    window.close();
   } else {
     document.body.innerText =
         "Your browser seems to be stopping this window from communicating with the main window.";
