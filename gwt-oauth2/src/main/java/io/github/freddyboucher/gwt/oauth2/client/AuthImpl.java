@@ -22,6 +22,9 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.storage.client.Storage;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
+import elemental2.dom.EventListener;
+import elemental2.dom.MessageEvent;
 import elemental2.dom.Window;
 import java.util.Map;
 
@@ -39,6 +42,25 @@ class AuthImpl extends Auth {
   AuthImpl() {
     super(Storage.isLocalStorageSupported() ? new TokenStoreImpl() : new CookieStoreImpl(),
         () -> Duration.currentTimeMillis(), Scheduler.get());
+    
+  }
+  
+  protected void registerListener() {
+    EventListener listener = new EventListener() {
+      @Override
+      public void handleEvent(Event evt) {
+        if (evt == null || !(evt instanceof MessageEvent)) {
+            return;
+        }
+        @SuppressWarnings("rawtypes")
+        MessageEvent messageEvent = (MessageEvent) evt;
+          if (DomGlobal.location.origin.equalsIgnoreCase(messageEvent.origin)) {
+            finish(String.valueOf(messageEvent.data));
+            DomGlobal.window.removeEventListener("message", this);
+          }
+        }
+      };
+    DomGlobal.window.addEventListener("message", listener);
   }
 
   /**
@@ -47,6 +69,7 @@ class AuthImpl extends Auth {
    */
   @Override
   void doLogin(String authUrl, Callback<Map<String, String>, Throwable> callback) {
+    registerListener();
     if (null != window && !window.closed) {
       callback.onFailure(new IllegalStateException("Authentication in progress"));
     } else {

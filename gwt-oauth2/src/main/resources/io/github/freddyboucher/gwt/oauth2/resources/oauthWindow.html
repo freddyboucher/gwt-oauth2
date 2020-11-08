@@ -8,11 +8,11 @@
 </head>
 <body>
 <script type="text/javascript">
-  if (window.opener && window.opener.gwtOAuth2 && window.opener.gwtOAuth2.__doLogin) {
+  if (window.opener) {
     if (location.hash.length !== 0) {
-      window.opener.gwtOAuth2.__doLogin(location.hash);
+      window.opener.postMessage(location.hash, location.url);
     } else {
-      window.opener.gwtOAuth2.__doLogin(location.search);
+    	window.opener.postMessage(location.search, location.url);
     }
   } else {
     document.body.innerText =
