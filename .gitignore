@@ -23,4 +23,5 @@ local.properties
 *.idea
 .idea/
 pom.xml.releaseBackup
-release.properties
+release.properties.checkstyle
+.checkstyle
