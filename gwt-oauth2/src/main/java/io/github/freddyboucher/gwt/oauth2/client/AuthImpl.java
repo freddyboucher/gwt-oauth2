@@ -18,10 +18,13 @@ package io.github.freddyboucher.gwt.oauth2.client;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.storage.client.Storage;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
+import elemental2.dom.EventListener;import elemental2.dom.MessageEvent;
 import elemental2.dom.Window;
 import java.util.Map;
 
@@ -39,6 +42,19 @@ class AuthImpl extends Auth {
   AuthImpl() {
     super(Storage.isLocalStorageSupported() ? new TokenStoreImpl() : new CookieStoreImpl(),
         () -> Duration.currentTimeMillis(), Scheduler.get());
+    EventListener listener = (evt) -> {
+      if (evt == null || !(evt instanceof MessageEvent)) {
+        return;
+      }
+      @SuppressWarnings("rawtypes")
+      MessageEvent messageEvent = (MessageEvent) evt;
+      String data = String.valueOf(messageEvent.data);
+      String origin = messageEvent.origin;
+      DomGlobal.console.info(evt);
+      DomGlobal.console.info(data);
+      DomGlobal.console.info(origin);
+    };
+    DomGlobal.window.addEventListener("message", listener);
   }
 
   /**
