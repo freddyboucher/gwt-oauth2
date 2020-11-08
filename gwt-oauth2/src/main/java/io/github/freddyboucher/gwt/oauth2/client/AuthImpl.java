@@ -50,8 +50,7 @@ class AuthImpl extends Auth {
       MessageEvent messageEvent = (MessageEvent) evt;
       String data = String.valueOf(messageEvent.data);
       String origin = messageEvent.origin;
-      DomGlobal.console.info(evt);
-      DomGlobal.console.info(data);
+      finish(data);
       DomGlobal.console.info(origin);
     };
     DomGlobal.window.addEventListener("message", listener);
