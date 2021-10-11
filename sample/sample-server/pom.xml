@@ -41,7 +41,7 @@
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.9.80</version>
+        <version>1.9.84</version>
         <configuration>
           <version>snapshot</version>
           <port>8080</port>
