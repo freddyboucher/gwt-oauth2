@@ -21,24 +21,7 @@ Quick start
 
 2\. Add `<inherits name="io.github.freddyboucher.gwt.oauth2.OAuth2"/>` to your GWT module XML file.
 
-3\. Add the `generateJsInteropExports` compilation option to your project. 
-If you use the tbroyer's [Maven Plugin for GWT](https://tbroyer.github.io/gwt-maven-plugin/) it should look like:
-```xml
-<plugin>
-  <groupId>net.ltgt.gwt.maven</groupId>
-  <artifactId>gwt-maven-plugin</artifactId>
-  <configuration>
-    <compilerArgs>
-      <arg>-generateJsInteropExports</arg>
-    </compilerArgs>
-    <codeserverArgs>
-      <arg>-generateJsInteropExports</arg>
-    </codeserverArgs>
-  </configuration>
-</plugin>
-```
-
-4\. Use it as follow:
+3\. Use it as follow:
 ```java
 public class App implements EntryPoint {
   @Override
