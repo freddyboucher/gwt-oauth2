@@ -22,4 +22,4 @@ jobs:
         with:
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
-      - run: gcloud --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-1.2-SNAPSHOT --promote --version=snapshot
+      - run: gcloud --quiet --verbosity=warning --project=gwt-oauth2 app deploy sample/sample-server/target/sample-server-1.2 --promote --version=1-2

@@ -14,7 +14,7 @@ Quick start
 <dependency>
   <groupId>io.github.freddyboucher</groupId>
   <artifactId>gwt-oauth2</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -50,23 +50,28 @@ public class App implements EntryPoint {
 
 Release Notes
 -------------
+
+- 1.2
+  - Fix: Deal with issue that oauth window cannot access parent window custom JS by switching to
+    window.postMessage (as a result, you do not need to add the `generateJsInteropExports`
+    compilation option to your project anymore).
 - 1.1
-    - Fix: Avoid Google api.js name collision by renaming `oauth2` to `gwtOAuth2`
+  - Fix: Avoid Google api.js name collision by renaming `oauth2` to `gwtOAuth2`
 - 1.0
-    - Expose TokenStore and add TokenStore#keySet and TokenStore#remove
+  - Expose TokenStore and add TokenStore#keySet and TokenStore#remove
 - 1.0-RC2
-    - Fix: Uncaught TypeError: Cannot set property 'innerText' of null
-    - Add 'viewport' meta to have a readable message on Mobile device
+  - Fix: Uncaught TypeError: Cannot set property 'innerText' of null
+  - Add 'viewport' meta to have a readable message on Mobile device
 - 1.0-RC1
-    - Update GWT to 2.9.0
-    - Migrate JSNI to JsInterop / elemental2
+  - Update GWT to 2.9.0
+  - Migrate JSNI to JsInterop / elemental2
 - 0.5
-    - Map<String, String> result - values are still URL encoded #10
+  - Map<String, String> result - values are still URL encoded #10
 - 0.4
-    - Map<String, String> result - values are URL encoded #8
-    - Callback is never consumed when manually closing the login window #9
+  - Map<String, String> result - values are URL encoded #8
+  - Callback is never consumed when manually closing the login window #9
 - 0.3
-    - Initial release
+  - Initial release
 
 Contributing
 -------------
